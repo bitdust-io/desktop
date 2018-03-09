@@ -1,19 +1,22 @@
-const { app, BrowserWindow } = require('electron');
+const {app, BrowserWindow} = require('electron');
 const path = require('path');
 const url = require('url');
 
-const { sudoInstallGit, installBitdust, checkIfGitInstalled } = require('./dependencies')
+const {sudoInstallGit, installBitdust, checkIfGitInstalled} = require('./dependencies');
 
 let win;
 
-function createWindow() {
-    win = new BrowserWindow({width: 800, height: 600});
 
-    win.loadURL(url.format({
-        pathname: path.join(__dirname, '../web/index.html'),
-        protocol: 'file:',
-        slashes: true
-    }));
+function createWindow() {
+    win = new BrowserWindow({width: 1400, height: 900, minHeight: 600});
+    //
+    // win.loadURL(url.format({
+    //     pathname: path.join(__dirname, '../web/index.html'),
+    //     protocol: 'file:',
+    //     slashes: true
+    // }));
+
+    win.loadURL('http://localhost:8080/');
 
     win.webContents.openDevTools();
 
@@ -21,8 +24,6 @@ function createWindow() {
         win = null
     });
 }
-
-
 
 
 async function installDependencies() {
@@ -55,7 +56,6 @@ async function init() {
         console.log(error)
     }
 }
-
 
 
 app.on('ready', init);
