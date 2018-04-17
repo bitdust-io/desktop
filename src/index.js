@@ -5,6 +5,7 @@ const url = require('url');
 const {sudoInstallGit, installBitdust, checkIfGitInstalled} = require('./dependencies');
 
 let win;
+let splashScreen;
 
 
 function createWindow() {
@@ -23,6 +24,25 @@ function createWindow() {
     win.on('closed', () => {
         win = null
     });
+}
+
+function showSplashScreen() {
+    splashScreen = new BrowserWindow({
+        width: 400, height: 241,
+        center: true,
+        frame: false, resizable: false, movable: false, minimizable: false, maximizable: false,
+        alwaysOnTop: true, skipTaskbar: true,
+    });
+
+    splashScreen.on('closed', function () {
+        splashScreen = null;
+    });
+
+    splashScreen.loadURL(url.format({
+        pathname: path.join(__dirname, '../web/splash.html'),
+        protocol: 'file:',
+        slashes: true
+    }));
 }
 
 
@@ -45,13 +65,15 @@ async function installDependencies() {
 }
 
 async function init() {
+    showSplashScreen();
     try {
         await installDependencies()
+        splashScreen.close();
     } catch (error) {
         console.log(error)
     }
     try {
-        await createWindow()
+        createWindow()
     } catch (error) {
         console.log(error)
     }
