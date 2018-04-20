@@ -3,6 +3,7 @@
 
 ROOT_DIR="$HOME/.bitdust"
 SOURCE_DIR="${ROOT_DIR}/src"
+SOURCE_UI_DIR="${ROOT_DIR}/ui"
 VENV_DIR="${ROOT_DIR}/venv"
 BITDUST_PY="${SOURCE_DIR}/bitdust.py"
 BITDUST_COMMAND_FILE="${ROOT_DIR}/bitdust"
@@ -20,7 +21,7 @@ fi
 
 
 pythonok=`brew list | grep python`
-pipok=`which pip`
+pipok=`which -s pip`
 
 
 if [[ ! $pythonok ]]; then
@@ -57,6 +58,18 @@ if [[ ! -e $SOURCE_DIR ]]; then
 else
     echo ''
     echo '##### BitDust source code already cloned locally'
+fi
+
+if [[ ! -e $SOURCE_UI_DIR ]]; then
+    echo ''
+    echo '##### Сloning the source code of BitDust UI...'
+    mkdir -p $SOURCE_UI_DIR
+    git clone --depth=1 https://github.com/bitdust-io/web.git $SOURCE_UI_DIR
+else
+    cd $SOURCE_UI_DIR
+    git fetch
+    git reset --hard origin/master
+    echo '##### Updating the source code of BitDust UI...'
 fi
 
 
