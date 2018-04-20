@@ -9,7 +9,7 @@ const installGitScript = path.resolve(pathPrefix, './bash/install_git_osx.sh')
 const installLibsScript = path.resolve(pathPrefix, './bash/deploy_osx.sh')
 
 const options = {
-    name: 'Electron'
+    name: 'BitDust'
 }
 
 
