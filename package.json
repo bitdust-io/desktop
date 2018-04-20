@@ -3,8 +3,9 @@
   "version": "0.1.0",
   "main": "src/index.js",
   "scripts": {
-    "start": "ELECTRON_ENV=development electron .",
-    "dist": "electron-builder"
+    "start": "electron .",
+    "start-debug": "ELECTRON_ENV=development electron .",
+    "dist": "ELECTRON_ENV=production electron-builder"
   },
   "devDependencies": {
     "electron-builder": "^19.54.0",
