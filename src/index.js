@@ -1,23 +1,32 @@
-const {app, BrowserWindow} = require('electron');
-const path = require('path');
-const url = require('url');
+const { app, BrowserWindow } = require('electron');
+const path = require('path')
+const url = require('url')
+const os = require('os')
 
-const {sudoInstallGit, installBitdust, checkIfGitInstalled} = require('./dependencies');
+const { sudoInstallGit, installBitdust, checkIfGitInstalled } = require('./dependencies');
 
 let win;
 let splashScreen;
 
 
-function createWindow() {
-    win = new BrowserWindow({width: 1400, height: 900, minHeight: 600});
-    //
-    // win.loadURL(url.format({
-    //     pathname: path.join(__dirname, '../web/index.html'),
-    //     protocol: 'file:',
-    //     slashes: true
-    // }));
+const uiDir = `${os.homedir()}/.bitdust/ui`
 
-    win.loadURL('http://localhost:8080/');
+function createWindow() {
+    win = new BrowserWindow({
+        width: 1400,
+        height: 900,
+        minHeight: 600
+    });
+
+    if (process.env.ELECTRON_ENV === 'development') {
+        win.loadURL('http://localhost:8080/');
+    } else {
+        win.loadURL(url.format({
+            pathname: path.join(uiDir, 'dist/index.html'),
+            protocol: 'file:',
+            slashes: true
+        }));
+    }
 
     win.webContents.openDevTools();
 
@@ -39,7 +48,7 @@ function showSplashScreen() {
     });
 
     splashScreen.loadURL(url.format({
-        pathname: path.join(__dirname, '../web/splash.html'),
+        pathname: path.join(uiDir, 'dist/splash.html'),
         protocol: 'file:',
         slashes: true
     }));
