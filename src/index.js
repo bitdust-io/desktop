@@ -13,9 +13,10 @@ const uiDir = `${os.homedir()}/.bitdust/ui`
 
 function createWindow() {
     win = new BrowserWindow({
-        width: 1400,
-        height: 900,
-        minHeight: 600
+        minWidth: 1024,
+        minHeight: 576,
+        title: 'BitDust',
+        titleBarStyle: 'hidden'
     });
 
     if (process.env.ELECTRON_ENV === 'development') {
@@ -27,8 +28,7 @@ function createWindow() {
             slashes: true
         }));
     }
-
-    win.webContents.openDevTools();
+    win.maximize()
 
     win.on('closed', () => {
         win = null
