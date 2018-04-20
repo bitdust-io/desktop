@@ -20,7 +20,7 @@ fi
 
 
 pythonok=`brew list | grep python`
-pipok=`which pip`
+pipok=`which -s pip`
 
 
 if [[ ! $pythonok ]]; then
