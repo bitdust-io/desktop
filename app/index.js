@@ -19,7 +19,7 @@ function createWindow() {
         titleBarStyle: 'hidden'
     });
 
-    if (process.env.ELECTRON_ENV === 'development') {
+    if (process.env.ELECTRON_ENV === 'debug') {
         win.loadURL('http://localhost:8080/');
     } else {
         win.loadURL(url.format({
