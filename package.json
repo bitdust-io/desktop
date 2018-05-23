@@ -5,8 +5,9 @@
   "description": "Desktop app for BitDust",
   "scripts": {
     "start": "electron .",
-    "start-debug": "ELECTRON_ENV=development electron .",
-    "dist": "electron-builder"
+    "start-debug": "ELECTRON_ENV=debug electron .",
+    "dist-mac": "electron-builder --mac",
+    "dist-win": "electron-builder --win"
   },
   "devDependencies": {
     "electron": "^2.0.0",
@@ -19,7 +20,9 @@
       "category": "public.app-category.social-networking",
       "target": "dmg"
     },
-    "win": {},
+    "win": {
+      "target": "nsis"
+    },
     "asar": true
   }
 }
