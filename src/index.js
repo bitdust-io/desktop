@@ -3,7 +3,7 @@ const path = require('path')
 const url = require('url')
 const os = require('os')
 
-const { sudoInstallGit, installBitdust, checkIfGitInstalled } = require('./dependencies');
+const { sudoInstallGit, installBitDust, checkIfGitInstalled } = require('./dependencies');
 
 let win;
 let splashScreen;
@@ -66,7 +66,7 @@ async function installDependencies() {
         }
     }
     try {
-        const res = await installBitdust()
+        const res = await installBitDust()
         console.log(res)
     } catch (error) {
         console.log(error)
