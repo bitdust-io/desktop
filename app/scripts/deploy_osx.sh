@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 ROOT_DIR="$HOME/.bitdust"
 SOURCE_DIR="${ROOT_DIR}/src"
 SOURCE_UI_DIR="${ROOT_DIR}/ui"
@@ -20,9 +19,19 @@ else
 fi
 
 
+gitok=`which git`
 pythonok=`brew list | grep python`
 pipok=`which -s pip`
 
+
+if [[ ! $gitok ]]; then
+    echo ''
+    echo '##### Installing GIT...'
+    brew install git
+else
+    echo ''
+    echo '##### GIT already installed'
+fi
 
 if [[ ! $pythonok ]]; then
     echo ''
