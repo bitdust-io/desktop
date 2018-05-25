@@ -3,7 +3,7 @@ const path = require('path')
 const url = require('url')
 const os = require('os')
 
-const { sudoInstallGit, installBitDust, checkIfGitInstalled } = require('./dependencies');
+const { installBitdust } = require('./dependencies');
 
 let win;
 let splashScreen;
@@ -13,12 +13,13 @@ const uiDir = `${os.homedir()}/.bitdust/ui`
 
 function createWindow() {
     win = new BrowserWindow({
-        width: 1400,
-        height: 900,
-        minHeight: 600
+        minWidth: 1024,
+        minHeight: 576,
+        title: 'BitDust',
+        titleBarStyle: 'hidden'
     });
 
-    if (process.env.ELECTRON_ENV === 'development') {
+    if (process.env.ELECTRON_ENV === 'debug') {
         win.loadURL('http://localhost:8080/');
     } else {
         win.loadURL(url.format({
@@ -27,8 +28,8 @@ function createWindow() {
             slashes: true
         }));
     }
-
-    win.webContents.openDevTools();
+    win.maximize()
+    win.webContents.openDevTools()
 
     win.on('closed', () => {
         win = null
@@ -55,33 +56,12 @@ function showSplashScreen() {
 }
 
 
-async function installDependencies() {
-    try {
-        await checkIfGitInstalled()
-    } catch (error) {
-        try {
-            const res = await sudoInstallGit()
-        } catch (error) {
-            console.log(error)
-        }
-    }
-    try {
-        const res = await installBitDust()
-        console.log(res)
-    } catch (error) {
-        console.log(error)
-    }
-}
-
 async function init() {
-    showSplashScreen();
     try {
-        await installDependencies()
-        splashScreen.close();
-    } catch (error) {
-        console.log(error)
-    }
-    try {
+        showSplashScreen()
+        const logs = await installBitdust()
+        console.log(logs)
+        splashScreen.close()
         createWindow()
     } catch (error) {
         console.log(error)
