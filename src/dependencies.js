@@ -22,7 +22,7 @@ const sudoInstallGit = () => {
     })
 }
 
-const installBitdust = () => {
+const installBitDust = () => {
     return new Promise((resolve, reject) => {
         exec(installLibsScript, (error, stdout, stderr) => {
             if (error) reject(error)
@@ -41,7 +41,7 @@ const checkIfGitInstalled = () => {
 }
 
 module.exports = {
-    installBitdust,
+    installBitDust,
     sudoInstallGit,
     checkIfGitInstalled
 }
