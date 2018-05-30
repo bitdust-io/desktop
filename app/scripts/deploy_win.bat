@@ -222,14 +222,9 @@ wget0.exe https://github.com/git-for-windows/git/releases/download/v2.10.0.windo
 if %errorlevel% neq 0 goto EXIT
 :GitDownloaded
 echo *** Extracting Git-2.10.0-32-bit.exe to %TMPDIR%\git_temp
-Git-2.10.0-32-bit.exe /DIR="%TMPDIR%\git_temp" /NOICONS /VERYSILENT /SUPPRESSMSGBOXES /NOCANCEL /NORESTART /COMPONENTS=""
+Git-2.10.0-32-bit.exe /DIR="%BITDUST_HOME%\git" /NOICONS /VERYSILENT /SUPPRESSMSGBOXES /NOCANCEL /NORESTART /COMPONENTS=""
 if %errorlevel% neq 0 goto EXIT
 :GitExtracted
-if not exist %BITDUST_HOME%\git mkdir "%BITDUST_HOME%\git"
-echo *** Moving minimum required Git files from %TMPDIR%\git_temp to %BITDUST_HOME%\git
-move /Y "%TMPDIR%\git_temp\mingw32\bin" "%BITDUST_HOME%\git\"
-echo *** Celanup %TMPDIR%\git_temp
-rmdir /S /Q "%TMPDIR%\git_temp"
 if %errorlevel% neq 0 goto EXIT
 :GitInstalled
 
@@ -238,7 +233,7 @@ echo *** Checking for PyWin32 installed
 if exist %BITDUST_HOME%\python\Lib\site-packages\win32\win32api.pyd goto PyWin32Installed
 if exist pywin32-219.win32-py2.7.exe goto PyWin32Downloaded 
 echo *** Downloading pywin32-219.win32-py2.7.exe
-wget0.exe  "http://sourceforge.net/projects/pywin32/files/pywin32/Build 219/pywin32-219.win32-py2.7.exe/download" -O "%TMPDIR%\pywin32-219.win32-py2.7.exe" 
+wget0.exe  "http://sourceforge.net/projects/pywin32/files/pywin32/Build 219/pywin32-219.win32-py2.7.exe/download" -O "%TMPDIR%\pywin32-219.win32-py2.7.exe" --no-check-certificate
 if %errorlevel% neq 0 goto EXIT
 :PyWin32Downloaded
 echo *** Installing pywin32-219.win32-py2.7.exe
@@ -252,7 +247,7 @@ echo *** Checking for PyCrypto installed
 if exist %BITDUST_HOME%\python\Lib\site-packages\Crypto\__init__.py goto PyCryptoInstalled
 if exist pycrypto-2.6.win32-py2.7.exe  goto PyCryptoDownloaded 
 echo *** Downloading pycrypto-2.6.win32-py2.7.exe
-wget0.exe  "http://www.voidspace.org.uk/downloads/pycrypto26/pycrypto-2.6.win32-py2.7.exe" 
+wget0.exe  "http://www.voidspace.org.uk/downloads/pycrypto26/pycrypto-2.6.win32-py2.7.exe" --no-check-certificate 
 if %errorlevel% neq 0 goto EXIT
 :PyCryptoDownloaded
 echo *** Installing pycrypto-2.6.win32-py2.7.exe
@@ -265,7 +260,7 @@ echo *** Checking for Incremental installed
 if exist %BITDUST_HOME%\python\Lib\site-packages\incremental\__init__.py goto IncrementalInstalled
 if exist incremental-17.5.0-py2.py3-none-any.whl  goto IncrementalDownloaded 
 echo *** Downloading incremental-17.5.0-py2.py3-none-any.whl
-wget0.exe  "https://files.pythonhosted.org/packages/f5/1d/c98a587dc06e107115cf4a58b49de20b19222c83d75335a192052af4c4b7/incremental-17.5.0-py2.py3-none-any.whl" 
+wget0.exe  "https://files.pythonhosted.org/packages/f5/1d/c98a587dc06e107115cf4a58b49de20b19222c83d75335a192052af4c4b7/incremental-17.5.0-py2.py3-none-any.whl" --no-check-certificate 
 if %errorlevel% neq 0 goto EXIT
 :IncrementalDownloaded
 echo *** Installing incremental-17.5.0-py2.py3-none-any.whl
@@ -277,7 +272,7 @@ echo *** Checking for Twisted installed
 if exist %BITDUST_HOME%\python\Lib\site-packages\twisted\__init__.py goto TwistedInstalled
 if exist Twisted-17.9.0-cp27-cp27m-win32.whl  goto TwistedDownloaded 
 echo *** Downloading Twisted-17.9.0-cp27-cp27m-win32.whl
-wget0.exe  "https://github.com/zerodhatech/python-wheels/raw/master/Twisted-17.9.0-cp27-cp27m-win32.whl" 
+wget0.exe  "https://github.com/zerodhatech/python-wheels/raw/master/Twisted-17.9.0-cp27-cp27m-win32.whl" --no-check-certificate 
 if %errorlevel% neq 0 goto EXIT
 :TwistedDownloaded
 echo *** Installing Twisted-17.9.0-cp27-cp27m-win32.whl
