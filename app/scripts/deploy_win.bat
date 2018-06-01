@@ -257,7 +257,7 @@ wget0.exe  "https://files.pythonhosted.org/packages/f5/1d/c98a587dc06e107115cf4a
 if %errorlevel% neq 0 goto EXIT
 :IncrementalDownloaded
 echo *** Installing incremental-17.5.0-py2.py3-none-any.whl
-%BITDUST_HOME%\python\Scripts\pip install incremental-17.5.0-py2.py3-none-any.whl
+%BITDUST_HOME%\python\Scripts\pip.exe install incremental-17.5.0-py2.py3-none-any.whl
 :IncrementalInstalled
 
 
@@ -265,11 +265,11 @@ echo *** Checking for Twisted installed
 if exist %BITDUST_HOME%\python\Lib\site-packages\twisted\__init__.py goto TwistedInstalled
 if exist Twisted-17.9.0-cp27-cp27m-win32.whl  goto TwistedDownloaded 
 echo *** Downloading Twisted-17.9.0-cp27-cp27m-win32.whl
-wget0.exe  "https://github.com/zerodhatech/python-wheels/raw/master/Twisted-17.9.0-cp27-cp27m-win32.whl" --no-check-certificate 
+wget0.exe "https://github.com/zerodhatech/python-wheels/raw/master/Twisted-17.9.0-cp27-cp27m-win32.whl" --no-check-certificate 
 if %errorlevel% neq 0 goto EXIT
 :TwistedDownloaded
 echo *** Installing Twisted-17.9.0-cp27-cp27m-win32.whl
-%BITDUST_HOME%\python\Scripts\pip install Twisted-17.9.0-cp27-cp27m-win32.whl
+%BITDUST_HOME%\python\Scripts\pip.exe install Twisted-17.9.0-cp27-cp27m-win32.whl
 :TwistedInstalled
 
 
@@ -287,12 +287,12 @@ if %errorlevel% neq 0 goto EXIT
 :SourcesExist
 
 
-echo *** Running command "git clean"
-rem %BITDUST_HOME%\git\bin\git.exe clean -d -f -x .
-echo *** Running command "git reset"
-rem %BITDUST_HOME%\git\bin\git.exe reset --hard origin/master
-echo *** Running command "git pull"
-rem %BITDUST_HOME%\git\bin\git.exe pull
+echo *** Running command "git clean" in BitDust repository
+%BITDUST_HOME%\git\bin\git.exe clean -d -f -x .
+echo *** Running command "git reset" in BitDust repository
+%BITDUST_HOME%\git\bin\git.exe reset --hard origin/master
+echo *** Running command "git pull" in BitDust repository
+%BITDUST_HOME%\git\bin\git.exe pull
 
 
 echo *** Checking BitDust virtual environment
@@ -304,6 +304,24 @@ echo *** Deploy BitDust virtual environment
 %BITDUST_HOME%\python\python.exe bitdust.py install
 if %errorlevel% neq 0 goto EXIT
 :VenvExist
+
+
+cd /D %BITDUST_HOME%\
+
+if exist %BITDUST_HOME%\ui\index.html goto UISourcesExist
+echo *** Downloading BitDust UI using "git clone" from GitHub devel repository
+%BITDUST_HOME%\git\bin\git.exe clone --depth 1 https://github.com/bitdust-io/web.git ui
+if %errorlevel% neq 0 goto EXIT
+:UISourcesExist
+
+
+cd /D %BITDUST_HOME%\ui\
+echo *** Running command "git clean" in BitDust UI repository
+%BITDUST_HOME%\git\bin\git.exe clean -d -f -x .
+echo *** Running command "git reset" in BitDust UI repository
+%BITDUST_HOME%\git\bin\git.exe reset --hard origin/master
+echo *** Running command "git pull" in BitDust UI repository
+%BITDUST_HOME%\git\bin\git.exe pull
 
 
 rem echo Update binary extensions
