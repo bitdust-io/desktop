@@ -60,7 +60,6 @@ async function init() {
     try {
         showSplashScreen()
         const logs = await installBitdust()
-        console.log(logs)
         splashScreen.close()
         createWindow()
     } catch (error) {
