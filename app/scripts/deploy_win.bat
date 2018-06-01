@@ -175,8 +175,8 @@ echo *** Downloading python-2.7.9.msi
 wget0.exe  https://www.python.org/ftp/python/2.7.9/python-2.7.9.msi --no-check-certificate 
 :PythonDownloaded
 echo *** Extracting python-2.7.9.msi to %BITDUST_HOME%\python
-if not exist %BITDUST_HOME%\python mkdir %BITDUST_HOME%\python
-cscript //Nologo %EXTRACT_SCRIPT% python-2.7.9.msi %BITDUST_HOME%\python
+if not exist %BITDUST_HOME%\python mkdir "%BITDUST_HOME%\python"
+cscript //Nologo %EXTRACT_SCRIPT% python-2.7.9.msi "%BITDUST_HOME%\python"
 echo *** Verifying Python binaries
 if exist %BITDUST_HOME%\python\python.exe goto PythonInstalled
 echo *** Python installation to %BITDUST_HOME%\python was failed!
@@ -229,17 +229,10 @@ if %errorlevel% neq 0 goto EXIT
 :GitInstalled
 
 
-echo *** Checking for PyWin32 installed
+echo *** Checking for pywin32 installed
 if exist %BITDUST_HOME%\python\Lib\site-packages\win32\win32api.pyd goto PyWin32Installed
-if exist pywin32-219.win32-py2.7.exe goto PyWin32Downloaded 
-echo *** Downloading pywin32-219.win32-py2.7.exe
-wget0.exe  "http://sourceforge.net/projects/pywin32/files/pywin32/Build 219/pywin32-219.win32-py2.7.exe/download" -O "%TMPDIR%\pywin32-219.win32-py2.7.exe" --no-check-certificate
-if %errorlevel% neq 0 goto EXIT
-:PyWin32Downloaded
-echo *** Installing pywin32-219.win32-py2.7.exe
-unzip.exe -o -q pywin32-219.win32-py2.7.exe -d pywin32
-xcopy pywin32\PLATLIB\*.* %BITDUST_HOME%\python\Lib\site-packages /E /I /Q /Y
-xcopy pywin32\PLATLIB\pywin32_system32\*.dll %BITDUST_HOME%\python\Lib\site-packages\win32 /E /I /Q /Y
+echo *** Installing pywin32
+%BITDUST_HOME%\python\Scripts\pip.exe install pywin32
 :PyWin32Installed
 
 
