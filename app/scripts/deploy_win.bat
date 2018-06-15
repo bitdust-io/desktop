@@ -511,7 +511,7 @@ cd /D "%BITDUST_HOME%"
 rem "START.lnk"
 venv\Scripts\python.exe %BITDUST_HOME%\src\bitdust.py daemon
 cd /D "%CURRENT_PATH%"
-cmd.exe /k cmd /c %FINISHED%
+rem cmd.exe /k cmd /c %FINISHED%
 exit
 
 
