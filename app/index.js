@@ -16,7 +16,7 @@ function createWindow() {
         minWidth: 1024,
         minHeight: 576,
         title: 'BitDust',
-        titleBarStyle: 'hidden'
+        //titleBarStyle: 'hidden'
     });
 
     if (process.env.ELECTRON_ENV === 'debug') {
