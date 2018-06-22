@@ -21,7 +21,7 @@ fi
 
 gitok=`which git`
 pythonok=`brew list | grep python`
-pipok=`which -s pip`
+pipok=`which pip`
 
 
 if [[ ! $gitok ]]; then
