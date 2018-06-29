@@ -9,6 +9,9 @@
     "dist-mac": "electron-builder --mac",
     "dist-win": "electron-builder --win"
   },
+  "dependencies": {
+    "electron-log": "^2.2.16"
+  },
   "devDependencies": {
     "electron": "^2.0.0",
     "electron-builder": "^20.11.1"
@@ -23,6 +26,6 @@
     "win": {
       "target": "nsis"
     },
-    "asar": true
+    "asar": false
   }
 }
