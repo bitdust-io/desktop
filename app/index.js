@@ -2,12 +2,12 @@ const { app, BrowserWindow } = require('electron');
 const path = require('path')
 const url = require('url')
 const os = require('os')
+const log = require('electron-log')
+const ipc = require('electron').ipcMain
 
 const { installBitdust } = require('./dependencies');
 
 let win;
-let splashScreen;
-
 
 const uiDir = `${os.homedir()}/.bitdust/ui`
 
@@ -36,34 +36,34 @@ function createWindow() {
     });
 }
 
-function showSplashScreen() {
-    splashScreen = new BrowserWindow({
+function createSplashScreen() {
+    const splashScreen = new BrowserWindow({
         width: 400, height: 241,
         center: true,
         frame: false, resizable: false, movable: false, minimizable: false, maximizable: false,
         alwaysOnTop: true, skipTaskbar: true,
     });
-
-    splashScreen.on('closed', function () {
-        splashScreen = null;
-    });
-
     splashScreen.loadURL(url.format({
-        pathname: path.join(uiDir, 'dist/splash.html'),
+        pathname: path.join(__dirname, './html/splash.html'),
         protocol: 'file:',
         slashes: true
     }));
+    ipc.on('installationStep', (message) => {
+        splashScreen.webContents.send('updateProgressBar', message)
+    })
+
+    return splashScreen
 }
 
 
 async function init() {
     try {
-        showSplashScreen()
-        const logs = await installBitdust()
+        const splashScreen = createSplashScreen()
+        await installBitdust()
         splashScreen.close()
         createWindow()
     } catch (error) {
-        console.log(error)
+        log.error(error);
     }
 }
 
