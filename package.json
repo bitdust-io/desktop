@@ -10,7 +10,9 @@
     "dist-win": "electron-builder --win"
   },
   "dependencies": {
-    "electron-log": "^2.2.16"
+    "electron-log": "^2.2.16",
+    "fix-path": "^2.1.0",
+    "shell-path": "^2.1.0"
   },
   "devDependencies": {
     "electron": "^2.0.0",
