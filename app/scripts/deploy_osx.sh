@@ -10,6 +10,7 @@ BITDUST_PY="${SOURCE_DIR}/bitdust.py"
 BITDUST_COMMAND_FILE="${ROOT_DIR}/bitdust"
 GLOBAL_COMMAND_FILE="/usr/local/bin/bitdust"
 
+
 which -s brew
 if [[ $? != 0 ]]; then
     echo ''
@@ -34,6 +35,7 @@ else
     echo ''
     echo '##### GIT already installed'
 fi
+
 
 if [[ ! $pythonok ]]; then
     echo ''
@@ -71,6 +73,7 @@ else
     echo '##### BitDust source code already cloned locally'
 fi
 
+
 if [[ ! -e $SOURCE_UI_DIR ]]; then
     echo ''
     echo '##### Сloning the source code of BitDust UI...'
@@ -85,37 +88,21 @@ fi
 
 
 if [[ ! -e $VENV_DIR ]]; then
-    # virtualenv -p python2.7 $VENV_DIR
-    virtualenv $VENV_DIR
     echo ''
-    echo '##### Created fresh BitDust virtual environment'
+    echo '##### Building BitDust virtual environment...'
+    python $BITDUST_PY install
+    ln -s -f $BITDUST_COMMAND_FILE $GLOBAL_COMMAND_FILE
+    echo ''
+    echo '##### System-wide shell command for BitDust created in ${GLOBAL_COMMAND_FILE}'
 else
     echo ''
     echo '##### BitDust virtual environment already exist'
 fi
 
 
-$PIP_BIN install --index-url=https://pypi.python.org/simple/ -r $SOURCE_DIR/requirements.txt
-
-
-# if [[ ! -e $VENV_DIR ]]; then
-#     echo ''
-#     echo '##### Building BitDust virtual environment...'
-#     python $BITDUST_PY install
-    
-#     ln -s -f $BITDUST_COMMAND_FILE $GLOBAL_COMMAND_FILE
-#     echo ''
-#     echo '##### System-wide shell command for BitDust created in ${GLOBAL_COMMAND_FILE}'
-# else
-#     echo ''
-#     echo '##### BitDust virtual environment already exist'
-# fi
-
-
 echo ''
 echo '##### Starting BitDust as a daemon pocess'
-# $GLOBAL_COMMAND_FILE daemon
-$PYTHON_BIN $BITDUST_PY daemon
+$GLOBAL_COMMAND_FILE daemon
 
 
 echo ''
