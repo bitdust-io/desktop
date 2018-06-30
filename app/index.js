@@ -13,8 +13,10 @@ const uiDir = `${os.homedir()}/.bitdust/ui`
 
 function createWindow() {
     win = new BrowserWindow({
-        minWidth: 1024,
-        minHeight: 576,
+        minWidth: 600,
+        minHeight: 400,
+        width: 1024,
+        height: 768,
         title: 'BitDust',
         //titleBarStyle: 'hidden'
     });

@@ -1,7 +1,10 @@
 const fs = require('fs')
 const path = require('path')
 const exec = require('child_process').exec
+const spawn = require('child_process').spawn
 const ipc = require('electron').ipcMain
+const log = require('electron-log')
+const shellPath = require('shell-path');
 
 const deployMacOs = path.resolve(__dirname,'./scripts/deploy_osx.sh')
 const deployWin = path.resolve(__dirname,'./scripts/deploy_win.bat')
@@ -9,11 +12,26 @@ const deployWin = path.resolve(__dirname,'./scripts/deploy_win.bat')
 const installBitdust = () => {
     let deployScript = process.platform === 'darwin' ? deployMacOs : deployWin
     return new Promise((resolve, reject) => {
-        let childProcess = exec(deployScript)
+    
+		var options = {
+		    env : process.env
+		};
+		options.env.PATH = shellPath.sync();
+
+        let childProcess = exec(deployScript, options);
+
         childProcess.stdout.on('data', (data) => {
             const message = data.toString()
             ipc.emit('installationStep', message)
+            log.warn(message)
         });
+
+        childProcess.stderr.on('data', (data) => {
+            const errmessage = data.toString()
+            ipc.emit('installationStep', errmessage)
+            log.warn(errmessage)
+        });
+
         childProcess.stdout.on('error', reject);
         childProcess.stdout.on('close', resolve);
     })
