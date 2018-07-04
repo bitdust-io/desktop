@@ -6,11 +6,21 @@ const ipc = require('electron').ipcMain
 const log = require('electron-log')
 const shellPath = require('shell-path');
 
+const deployLinux = path.resolve(__dirname,'./scripts/deploy_linux.sh')
 const deployMacOs = path.resolve(__dirname,'./scripts/deploy_osx.sh')
 const deployWin = path.resolve(__dirname,'./scripts/deploy_win.bat')
 
 const installBitdust = () => {
-    let deployScript = process.platform === 'darwin' ? deployMacOs : deployWin
+    let deployScript = '';
+
+    if (process.platform === 'linux') {
+        deployScript = deployLinux;
+    } else if (process.platform === 'darwin') {
+        deployScript = deployMacOs;
+    } else if (process.platform === 'win') {
+        deplyScript = deployWin;
+    };
+
     return new Promise((resolve, reject) => {
     
 		var options = {
