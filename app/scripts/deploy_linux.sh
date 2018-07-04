@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/bin/sh
+
 
 ROOT_DIR="$HOME/.bitdust"
 SOURCE_DIR="${ROOT_DIR}/src"
@@ -11,58 +12,7 @@ BITDUST_COMMAND_FILE="${ROOT_DIR}/bitdust"
 GLOBAL_COMMAND_FILE="/usr/local/bin/bitdust"
 
 
-which -s brew
-if [[ $? != 0 ]]; then
-    echo ''
-    echo '##### Installing Homebrew...'
-    echo | ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-else
-    echo ''
-    echo '##### Homebrew already installed'
-fi
-
-
-gitok=`which git`
-pythonok=`brew list | grep python`
-pipok=`which pip`
-
-
-if [[ ! $gitok ]]; then
-    echo ''
-    echo '##### Installing GIT...'
-    brew install git
-else
-    echo ''
-    echo '##### GIT already installed'
-fi
-
-
-if [[ ! $pythonok ]]; then
-    echo ''
-    echo '##### Installing Formula Python...'
-    brew install python
-else
-    echo ''
-    echo '##### Python already installed'
-fi
-
-
-if [[ ! $pipok ]]; then
-    echo ''
-    echo '##### Installing PIP for current user'
-    pip install --upgrade --user
-    pip install --upgrade pip --user
-
-    echo ''
-    echo '##### Installing virtualenv for current user'
-    pip install virtualenv --user
-else
-    echo ''
-    echo '##### PIP already installed'
-fi
-
-
-if [[ ! -e $SOURCE_DIR ]]; then
+if [ ! -d $SOURCE_DIR ]; then
     echo ''
     echo '##### Сloning the source code of BitDust project...'
     mkdir -p $SOURCE_DIR
@@ -74,7 +24,7 @@ else
 fi
 
 
-if [[ ! -e $SOURCE_UI_DIR ]]; then
+if [ ! -d $SOURCE_UI_DIR ]; then
     echo ''
     echo '##### Сloning the source code of BitDust UI...'
     mkdir -p $SOURCE_UI_DIR
@@ -87,13 +37,13 @@ else
 fi
 
 
-if [[ ! -e $VENV_DIR ]]; then
+if [ ! -d $VENV_DIR ]; then
     echo ''
     echo '##### Building BitDust virtual environment...'
     python $BITDUST_PY install
     ln -s -f $BITDUST_COMMAND_FILE $GLOBAL_COMMAND_FILE
     echo ''
-    echo '##### System-wide shell command for BitDust created in ${GLOBAL_COMMAND_FILE}'
+    echo '##### System-wide shell command "bitdust" was created'
 else
     echo ''
     echo '##### BitDust virtual environment already exist'
@@ -107,4 +57,6 @@ $GLOBAL_COMMAND_FILE daemon
 
 echo ''
 echo '##### DONE!!!'
+
+exit 0
 
