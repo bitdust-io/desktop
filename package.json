@@ -1,5 +1,6 @@
-{
+{	
   "name": "bitdust-desktop",
+  "author": "BitDust Contributors <bitdust.io@gmail.com> (https://bitdust.io)",
   "version": "0.1.0",
   "main": "app/index.js",
   "description": "Desktop app for BitDust",
@@ -7,7 +8,8 @@
     "start": "electron .",
     "start-debug": "ELECTRON_ENV=debug electron .",
     "dist-mac": "electron-builder --mac",
-    "dist-win": "electron-builder --win"
+    "dist-win": "electron-builder --win",
+    "dist-deb": "electron-builder --linux deb"
   },
   "dependencies": {
     "electron-log": "^2.2.16",
@@ -16,7 +18,7 @@
   },
   "devDependencies": {
     "electron": "^2.0.0",
-    "electron-builder": "^20.11.1"
+    "electron-builder": "^20.18.0"
   },
   "build": {
     "appId": "com.electron.bitdust",
@@ -27,6 +29,10 @@
     },
     "win": {
       "target": "nsis"
+    },
+    "linux": {
+      "target": "deb",
+      "depends": ["gconf2", "gconf-service", "libnotify4", "libappindicator1", "libxtst6", "libnss3", "git", "gcc", "python-dev", "python-virtualenv"]
     },
     "asar": false
   }
