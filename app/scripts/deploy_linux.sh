@@ -43,7 +43,7 @@ if [ ! -d $VENV_DIR ]; then
     python $BITDUST_PY install
     ln -s -f $BITDUST_COMMAND_FILE $GLOBAL_COMMAND_FILE
     echo ''
-    echo '##### System-wide shell command for BitDust created in ${GLOBAL_COMMAND_FILE}'
+    echo '##### System-wide shell command "bitdust" was created'
 else
     echo ''
     echo '##### BitDust virtual environment already exist'
@@ -51,9 +51,12 @@ fi
 
 
 echo ''
-echo '##### Starting BitDust as a daemon pocess'
+echo '##### Starting BitDust as a daemon process'
 $GLOBAL_COMMAND_FILE daemon
 
 
 echo ''
 echo '##### DONE!!!'
+
+exit 0
+

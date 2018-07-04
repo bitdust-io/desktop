@@ -101,7 +101,7 @@ fi
 
 
 echo ''
-echo '##### Starting BitDust as a daemon pocess'
+echo '##### Starting BitDust as a daemon process'
 $GLOBAL_COMMAND_FILE daemon
 
 
