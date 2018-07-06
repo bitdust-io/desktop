@@ -18,12 +18,14 @@ function createWindow() {
         width: 1024,
         height: 768,
         title: 'BitDust',
+		devTools: false,
         //titleBarStyle: 'hidden'
     });
 
     if (process.env.ELECTRON_ENV === 'debug') {
         win.loadURL('http://localhost:8080/');
     } else {
+		log.debug('Opening main UI page: ' + path.join(uiDir, 'dist/index.html'));
         win.loadURL(url.format({
             pathname: path.join(uiDir, 'dist/index.html'),
             protocol: 'file:',
@@ -61,7 +63,9 @@ function createSplashScreen() {
 async function init() {
     try {
         const splashScreen = createSplashScreen()
+		log.debug('Target platform: ' + process.platform);
         await installBitdust()
+		// TODO: if installBitdust() failed - do not show splash screen at all.
         splashScreen.close()
         createWindow()
     } catch (error) {
