@@ -1,32 +1,12 @@
 @echo off
 
 
+echo *** Verifying BitDust installation files
+
+
 set CURRENT_PATH=%cd%
 set BITDUST_FULL_HOME=%HOMEDRIVE%%HOMEPATH%\.bitdust
 echo *** Destination folder is %BITDUST_FULL_HOME%
-
-
-if exist "%BITDUST_FULL_HOME%\python\python.exe" goto StartInstall
-
-
-python --version 1>NUL 2>NUL
-if errorlevel 1 goto StartInstall
-reg query "hkcu\software\Python" 1>NUL 2>NUL
-if errorlevel 1 goto StartInstall
-reg query "hklm\software\Python" 1>NUL 2>NUL
-if errorlevel 1 goto StartInstall
-
-
-echo *** Python already installed on your machine.
-echo *** Please install BitDust software manually by following this howto: 
-echo     https://bitdust.io/install.html
-rem pause
-exit /b %errorlevel% 
-
-
-:StartInstall
-echo *** Start installation
-SET CURRENT_PATH=%cd%
 
 
 if not exist "%BITDUST_FULL_HOME%" echo Prepare destination folder %BITDUST_FULL_HOME%
@@ -35,22 +15,24 @@ if not exist "%BITDUST_FULL_HOME%" mkdir "%BITDUST_FULL_HOME%"
 
 set SHORT_PATH_SCRIPT=%BITDUST_FULL_HOME%\shortpath.bat
 set SHORT_PATH_OUT=%BITDUST_FULL_HOME%\shortpath.txt
+if exist "%SHORT_PATH_OUT%" goto ShortPathKnown
+
+echo *** Prepare short path to the data folder
 echo @echo OFF > "%SHORT_PATH_SCRIPT%"
 echo echo %%~s1 >> "%SHORT_PATH_SCRIPT%"
 call "%SHORT_PATH_SCRIPT%" "%BITDUST_FULL_HOME%" > "%SHORT_PATH_OUT%"
-set /P BITDUST_HOME_0=<"%SHORT_PATH_OUT%"
-call :StripHome %BITDUST_HOME_0%
-:StripHome
-set BITDUST_HOME=%1
-echo *** Short and safe path is %BITDUST_HOME%
-rem del /Q "%SHORT_PATH_OUT%"
 del /Q "%SHORT_PATH_SCRIPT%"
 
 
+:ShortPathKnown
+set /P BITDUST_HOME=<"%SHORT_PATH_OUT%"
+setlocal enabledelayedexpansion
+for /l %%a in (1,1,300) do if "!BITDUST_HOME:~-1!"==" " set BITDUST_HOME=!BITDUST_HOME:~0,-1!
+setlocal disabledelayedexpansion
+echo *** Short and safe path is %BITDUST_HOME%
+
+
 set TMPDIR=%TEMP%\BitDust_Install_TEMP
-rem set TMPDIR=%TEMP%\BitDust_Install_TEMP.%RANDOM%
-rem if exist "%TMPDIR%\NUL" rmdir /S /Q %TMPDIR%
-rem mkdir %TMPDIR%
 if not exist %TMPDIR% mkdir %TMPDIR%
 echo *** Prepared temp folder in %TMPDIR%
 
@@ -86,7 +68,6 @@ echo echo Welcome to the BitDust World !!!. >> %FINISHED%
 echo echo. >> %FINISHED%
 echo echo. >> %FINISHED%
 echo echo. >> %FINISHED%
-rem echo pause >> %FINISHED%
 
 
 echo *** Checking wget.exe file
@@ -156,17 +137,11 @@ echo objFile.WriteLine strNewText >> %SUBSTITUTE%
 echo objFile.Close >> %SUBSTITUTE%
 
 
-echo *** Stopping Python instances
-tasklist /FI "IMAGENAME eq bitdust.exe" 2>NUL | c:\windows\system32\find.exe /I /N "bitdust.exe" >NUL && ( taskkill  /IM bitdust.exe /F /T )
-tasklist /FI "IMAGENAME eq bpstarter.exe" 2>NUL | c:\windows\system32\find.exe /I /N "bpstarter.exe" >NUL && ( taskkill  /IM bpstarter.exe /F /T )
-tasklist /FI "IMAGENAME eq bpgui.exe" 2>NUL | c:\windows\system32\find.exe /I /N "bpgui.exe" >NUL && ( taskkill  /IM bpgui.exe /F /T )
-tasklist /FI "IMAGENAME eq bppipe.exe" 2>NUL | c:\windows\system32\find.exe /I /N "bppipe.exe" >NUL && ( taskkill  /IM bppipe.exe /F /T )
-tasklist /FI "IMAGENAME eq bptester.exe" 2>NUL | c:\windows\system32\find.exe /I /N "bptester.exe" >NUL && ( taskkill  /IM bptester.exe /F /T )
-tasklist /FI "IMAGENAME eq python.exe" >NUL | c:\windows\system32\find.exe /I /N "python.exe" >NUL && ( taskkill  /IM python.exe /F /T )
-tasklist /FI "IMAGENAME eq pythonw.exe" >NUL | c:\windows\system32\find.exe /I /N "pythonw.exe" >NUL && ( taskkill  /IM pythonw.exe /F /T )
+rem echo *** Stopping Python instances
+rem taskkill  /IM BitDustDaemon.exe /F /T
 
 
-echo *** Checking for python binaries in the destination folder
+echo *** Checking for python binaries in the destination folder %BITDUST_HOME%\python\
 if exist %BITDUST_HOME%\python\python.exe goto PythonInstalled
 
 
@@ -180,7 +155,6 @@ cscript //Nologo %EXTRACT_SCRIPT% python-2.7.9.msi "%BITDUST_HOME%\python"
 echo *** Verifying Python binaries
 if exist %BITDUST_HOME%\python\python.exe goto PythonInstalled
 echo *** Python installation to %BITDUST_HOME%\python was failed!
-rem pause
 exit /b %errorlevel%
 :PythonInstalled
 
@@ -189,28 +163,17 @@ echo *** Checking Python version
 %BITDUST_HOME%\python\python.exe --version
 if errorlevel 0 goto ContinueInstall
 echo *** Python installation to %BITDUST_HOME%\python is corrupted!
-rem pause
 exit /b %errorlevel%
 :ContinueInstall
-
-
-rem echo Checking for easy_install
-rem if exist %BITDUST_HOME%\python\Scripts\easy_install.exe goto EasyInstallInstalled
-rem echo Installing setuptools
-rem wget0  https://bootstrap.pypa.io/ez_setup.py -O "ez_setup.py" --no-check-certificate 
-rem %BITDUST_HOME%\python\python.exe ez_setup.py
-rem if %errorlevel% neq 0 goto EXIT
-rem :EasyInstallInstalled
 
 
 echo *** Checking for pip installed
 if exist %BITDUST_HOME%\python\Scripts\pip.exe goto PipInstalled
 echo *** Installing pip
-rem %BITDUST_HOME%\python\python.exe -m easy_install pip
 del /F /Q get-pip.py
 wget0.exe https://bootstrap.pypa.io/get-pip.py --no-check-certificate
 %BITDUST_HOME%\python\python.exe get-pip.py
-if %errorlevel% neq 0 goto EXIT
+if %errorlevel% neq 0 goto DEPLOY_ERROR
 :PipInstalled
 
 
@@ -219,13 +182,13 @@ if exist %BITDUST_HOME%\git\bin\git.exe goto GitInstalled
 if exist Git-2.10.0-32-bit.exe goto GitDownloaded 
 echo *** Downloading Git-2.10.0-32-bit.exe
 wget0.exe https://github.com/git-for-windows/git/releases/download/v2.10.0.windows.1/Git-2.10.0-32-bit.exe --no-check-certificate
-if %errorlevel% neq 0 goto EXIT
+if %errorlevel% neq 0 goto DEPLOY_ERROR
 :GitDownloaded
 echo *** Extracting Git-2.10.0-32-bit.exe to %TMPDIR%\git_temp
 Git-2.10.0-32-bit.exe /DIR="%BITDUST_HOME%\git" /NOICONS /VERYSILENT /SUPPRESSMSGBOXES /NOCANCEL /NORESTART /COMPONENTS=""
-if %errorlevel% neq 0 goto EXIT
+if %errorlevel% neq 0 goto DEPLOY_ERROR
 :GitExtracted
-if %errorlevel% neq 0 goto EXIT
+if %errorlevel% neq 0 goto DEPLOY_ERROR
 :GitInstalled
 
 
@@ -241,7 +204,7 @@ if exist %BITDUST_HOME%\python\Lib\site-packages\Crypto\__init__.py goto PyCrypt
 if exist pycrypto-2.6.win32-py2.7.exe  goto PyCryptoDownloaded 
 echo *** Downloading pycrypto-2.6.win32-py2.7.exe
 wget0.exe  "http://www.voidspace.org.uk/downloads/pycrypto26/pycrypto-2.6.win32-py2.7.exe" --no-check-certificate 
-if %errorlevel% neq 0 goto EXIT
+if %errorlevel% neq 0 goto DEPLOY_ERROR
 :PyCryptoDownloaded
 echo *** Installing pycrypto-2.6.win32-py2.7.exe
 unzip.exe -o -q pycrypto-2.6.win32-py2.7.exe -d pycrypto
@@ -254,7 +217,7 @@ if exist %BITDUST_HOME%\python\Lib\site-packages\incremental\__init__.py goto In
 if exist incremental-17.5.0-py2.py3-none-any.whl  goto IncrementalDownloaded 
 echo *** Downloading incremental-17.5.0-py2.py3-none-any.whl
 wget0.exe  "https://files.pythonhosted.org/packages/f5/1d/c98a587dc06e107115cf4a58b49de20b19222c83d75335a192052af4c4b7/incremental-17.5.0-py2.py3-none-any.whl" --no-check-certificate 
-if %errorlevel% neq 0 goto EXIT
+if %errorlevel% neq 0 goto DEPLOY_ERROR
 :IncrementalDownloaded
 echo *** Installing incremental-17.5.0-py2.py3-none-any.whl
 %BITDUST_HOME%\python\Scripts\pip.exe install incremental-17.5.0-py2.py3-none-any.whl
@@ -266,7 +229,7 @@ if exist %BITDUST_HOME%\python\Lib\site-packages\twisted\__init__.py goto Twiste
 if exist Twisted-17.9.0-cp27-cp27m-win32.whl  goto TwistedDownloaded 
 echo *** Downloading Twisted-17.9.0-cp27-cp27m-win32.whl
 wget0.exe "https://github.com/zerodhatech/python-wheels/raw/master/Twisted-17.9.0-cp27-cp27m-win32.whl" --no-check-certificate 
-if %errorlevel% neq 0 goto EXIT
+if %errorlevel% neq 0 goto DEPLOY_ERROR
 :TwistedDownloaded
 echo *** Installing Twisted-17.9.0-cp27-cp27m-win32.whl
 %BITDUST_HOME%\python\Scripts\pip.exe install Twisted-17.9.0-cp27-cp27m-win32.whl
@@ -282,13 +245,13 @@ cd /D %BITDUST_HOME%\src
 
 if exist %BITDUST_HOME%\src\bitdust.py goto SourcesExist
 echo *** Downloading BitDust software using "git clone" from GitHub devel repository
-%BITDUST_HOME%\git\bin\git.exe clone --depth 1 https://github.com/bitdust-io/devel.git .
-if %errorlevel% neq 0 goto EXIT
+%BITDUST_HOME%\git\bin\git.exe clone -q --depth 1 https://github.com/bitdust-io/devel.git .
+if %errorlevel% neq 0 goto DEPLOY_ERROR
 :SourcesExist
 
 
 echo *** Running command "git clean" in BitDust repository
-%BITDUST_HOME%\git\bin\git.exe clean -d -f -x .
+%BITDUST_HOME%\git\bin\git.exe clean -q -d -f -x .
 echo *** Running command "git reset" in BitDust repository
 %BITDUST_HOME%\git\bin\git.exe reset --hard origin/master
 echo *** Running command "git pull" in BitDust repository
@@ -299,10 +262,11 @@ echo *** Checking BitDust virtual environment
 if exist %BITDUST_HOME%\venv goto VenvExist
 echo *** Checking/Installing virtualenv
 %BITDUST_HOME%\python\Scripts\pip.exe install virtualenv
-if %errorlevel% neq 0 goto EXIT
+if %errorlevel% neq 0 goto DEPLOY_ERROR
 echo *** Deploy BitDust virtual environment
 %BITDUST_HOME%\python\python.exe bitdust.py install
-if %errorlevel% neq 0 goto EXIT
+copy /B /Y %BITDUST_HOME%\venv\Scripts\python.exe %BITDUST_HOME%\venv\Scripts\BitDustDaemon.exe
+if %errorlevel% neq 0 goto DEPLOY_ERROR
 :VenvExist
 
 
@@ -310,211 +274,34 @@ cd /D %BITDUST_HOME%\
 
 if exist %BITDUST_HOME%\ui\index.html goto UISourcesExist
 echo *** Downloading BitDust UI using "git clone" from GitHub devel repository
-%BITDUST_HOME%\git\bin\git.exe clone --depth 1 https://github.com/bitdust-io/web.git ui
-if %errorlevel% neq 0 goto EXIT
+%BITDUST_HOME%\git\bin\git.exe clone -q --depth 1 https://github.com/bitdust-io/web.git ui
+if %errorlevel% neq 0 goto DEPLOY_ERROR
 :UISourcesExist
 
 
 cd /D %BITDUST_HOME%\ui\
 echo *** Running command "git clean" in BitDust UI repository
-%BITDUST_HOME%\git\bin\git.exe clean -d -f -x .
+%BITDUST_HOME%\git\bin\git.exe clean -q -d -f -x .
 echo *** Running command "git reset" in BitDust UI repository
 %BITDUST_HOME%\git\bin\git.exe reset --hard origin/master
 echo *** Running command "git pull" in BitDust UI repository
 %BITDUST_HOME%\git\bin\git.exe pull
 
 
-rem echo Update binary extensions
-rem xcopy deploy\windows_devel\Python2.7.9\* %BITDUST_HOME%\python /E /H /R /Y 
+goto DEPLOY_SUCCESS
+
+:DEPLOY_ERROR
+echo DEPLOYMENT FAILED
+echo.
+exit /b %errorlevel%
 
 
-cd /D %TMPDIR%
-
-
-rem echo *** Checking/Installing Python dependencies with pip package manager
-rem %BITDUST_HOME%\python\Scripts\pip.exe install zope.interface
-rem if %errorlevel% neq 0 goto EXIT
-rem %BITDUST_HOME%\python\Scripts\pip.exe install pyOpenSSL
-rem if %errorlevel% neq 0 goto EXIT
-rem %BITDUST_HOME%\python\Scripts\pip.exe install pyasn1
-rem if %errorlevel% neq 0 goto EXIT
-rem %BITDUST_HOME%\python\Scripts\pip.exe install service_identity
-rem if %errorlevel% neq 0 goto EXIT
-rem %BITDUST_HOME%\python\Scripts\pip.exe install Twisted
-rem if %errorlevel% neq 0 goto EXIT
-rem %BITDUST_HOME%\python\Scripts\pip.exe install six>=1.5.2
-rem if %errorlevel% neq 0 goto EXIT
-rem %BITDUST_HOME%\python\Scripts\pip.exe install cffi>=0.8
-rem if %errorlevel% neq 0 goto EXIT
-rem %BITDUST_HOME%\python\Scripts\pip.exe install cryptography
-rem if %errorlevel% neq 0 goto EXIT
-rem %BITDUST_HOME%\python\Scripts\pip.exe install idna
-rem if %errorlevel% neq 0 goto EXIT
-rem %BITDUST_HOME%\python\Scripts\pip.exe install enum34
-rem if %errorlevel% neq 0 goto EXIT
-rem %BITDUST_HOME%\python\Scripts\pip.exe install ipaddress
-rem if %errorlevel% neq 0 goto EXIT
-rem %BITDUST_HOME%\python\Scripts\pip.exe install pycparser
-rem rem if %errorlevel% neq 0 goto EXIT
-rem rem %BITDUST_HOME%\python\Scripts\pip.exe install Django==1.7
-
-
-if not exist %BITDUST_HOME%\bin echo *** Create %BITDUST_HOME%\bin folder to make aliases for system commands
-if not exist %BITDUST_HOME%\bin mkdir %BITDUST_HOME%\bin
-
-
-echo *** Update system commands
-echo @echo off > %BITDUST_HOME%\bin\bitdustd.bat
-echo cd /D %BITDUST_HOME%\src >> %BITDUST_HOME%\bin\bitdustd.bat
-echo call %BITDUST_HOME%\python\python.exe bitdust.py %%* >> %BITDUST_HOME%\bin\bitdustd.bat
-rem echo pause >> %BITDUST_HOME%\bin\bitdustd.bat
-echo @echo off > %BITDUST_HOME%\bin\bitdust.bat
-echo cd /D %BITDUST_HOME%\src >> %BITDUST_HOME%\bin\bitdust.bat
-echo start %BITDUST_HOME%\python\pythonw.exe bitdust.py %%* >> %BITDUST_HOME%\bin\bitdust.bat
-rem echo pause >> %BITDUST_HOME%\bin\bitdust.bat
-echo @echo off > %BITDUST_HOME%\bin\bitdust-sync.bat
-echo cd /D %BITDUST_HOME%\src >> %BITDUST_HOME%\bin\bitdust-sync.bat
-echo echo Running command "git clean" >> %BITDUST_HOME%\bin\bitdust-sync.bat
-echo %BITDUST_HOME%\git\bin\git.exe clean -d -fx "" 1^>NUL >> %BITDUST_HOME%\bin\bitdust-sync.bat
-echo echo Running command "git reset" >> %BITDUST_HOME%\bin\bitdust-sync.bat
-echo %BITDUST_HOME%\git\bin\git.exe reset --hard origin/master >> %BITDUST_HOME%\bin\bitdust-sync.bat
-echo echo Running command "git pull" >> %BITDUST_HOME%\bin\bitdust-sync.bat
-echo %BITDUST_HOME%\git\bin\git.exe pull >> %BITDUST_HOME%\bin\bitdust-sync.bat
-echo echo Running command "python manage.py syncdb" >> %BITDUST_HOME%\bin\bitdust-sync.bat
-echo call %BITDUST_HOME%\python\python.exe manage.py syncdb >> %BITDUST_HOME%\bin\bitdust-sync.bat
-rem echo pause >> %BITDUST_HOME%\bin\bitdust-sync.bat
-echo @echo off > %BITDUST_HOME%\bin\bitdust-sync-restart.bat
-echo cd /D %BITDUST_HOME%\src >> %BITDUST_HOME%\bin\bitdust-sync-restart.bat
-echo call %BITDUST_HOME%\python\python.exe bitdust.py stop >> %BITDUST_HOME%\bin\bitdust-sync-restart.bat
-echo echo Running command "git clean" >> %BITDUST_HOME%\bin\bitdust-sync-restart.bat
-echo %BITDUST_HOME%\git\bin\git.exe clean -d -fx "" 1^>NUL >> %BITDUST_HOME%\bin\bitdust-sync-restart.bat
-echo echo Running command "git reset" >> %BITDUST_HOME%\bin\bitdust-sync-restart.bat
-echo %BITDUST_HOME%\git\bin\git.exe reset --hard origin/master >> %BITDUST_HOME%\bin\bitdust-sync-restart.bat
-echo echo Running command "git pull" >> %BITDUST_HOME%\bin\bitdust-sync-restart.bat
-echo %BITDUST_HOME%\git\bin\git.exe pull >> %BITDUST_HOME%\bin\bitdust-sync-restart.bat
-echo echo Running command "python manage.py syncdb" >> %BITDUST_HOME%\bin\bitdust-sync-restart.bat
-echo call %BITDUST_HOME%\python\python.exe manage.py syncdb >> %BITDUST_HOME%\bin\bitdust-sync-restart.bat
-echo start %BITDUST_HOME%\python\pythonw.exe bitdust.py %%* >> %BITDUST_HOME%\bin\bitdust-sync-restart.bat
-rem echo pause >> %BITDUST_HOME%\bin\bitdust-sync-restart.bat
-
-
-echo *** Prepare Desktop icon
-echo set WshShell = WScript.CreateObject("WScript.Shell") > find_desktop.vbs
-echo strDesktop = WshShell.SpecialFolders("Desktop") >> find_desktop.vbs
-echo wscript.echo(strDesktop) >> find_desktop.vbs
-for /F "usebackq delims=" %%i in (`cscript find_desktop.vbs`) do set DESKTOP_DIR1=%%i
-rem echo Desktop folder is %DESKTOP_DIR1%
-set DESKTOP_REG_ENTRY="HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders"
-set DESKTOP_REG_KEY="Desktop"
-set DESKTOP_DIR2=
-for /F "tokens=1,2*" %%a in ('REG QUERY %DESKTOP_REG_ENTRY% /v %DESKTOP_REG_KEY% ^| FINDSTR "REG_SZ"') do ( set DESKTOP_DIR2=%%c )
-echo *** Desktop folder is %DESKTOP_DIR1%
-
-
-echo *** Updating shortcuts
-echo Set oWS = WScript.CreateObject("WScript.Shell") > CreateShortcut0.vbs
-echo sLinkFile = "BitDust.lnk" >> CreateShortcut0.vbs
-echo Set oLink = oWS.CreateShortcut(sLinkFile) >> CreateShortcut0.vbs
-echo oLink.TargetPath = "%BITDUST_HOME%" >> CreateShortcut0.vbs
-echo oLink.Arguments = "" >> CreateShortcut0.vbs
-echo oLink.WorkingDirectory = "%BITDUST_HOME%" >> CreateShortcut0.vbs
-echo oLink.IconLocation = "%BITDUST_HOME%\src\icons\desktop.ico" >> CreateShortcut0.vbs
-echo oLink.Description = "Open root folder of BitDust Software" >> CreateShortcut0.vbs
-echo oLink.WindowStyle = "1" >> CreateShortcut0.vbs
-echo oLink.Save >> CreateShortcut0.vbs
-cscript //Nologo CreateShortcut0.vbs
-if %errorlevel% neq 0 goto EXIT
-del /Q "%DESKTOP_DIR1%\BitDust.lnk"
-xcopy "BitDust.lnk" "%DESKTOP_DIR1%" /Q /Y
-
-
-echo Set oWS = WScript.CreateObject("WScript.Shell") > CreateShortcut1.vbs
-echo sLinkFile = "%BITDUST_HOME%\START.lnk" >> CreateShortcut1.vbs
-echo Set oLink = oWS.CreateShortcut(sLinkFile) >> CreateShortcut1.vbs
-echo oLink.TargetPath = "%BITDUST_HOME%\bin\bitdust.bat" >> CreateShortcut1.vbs
-echo oLink.Arguments = "show" >> CreateShortcut1.vbs
-echo oLink.WorkingDirectory = "%BITDUST_HOME%\src" >> CreateShortcut1.vbs
-echo oLink.IconLocation = "%BITDUST_HOME%\src\icons\desktop.ico" >> CreateShortcut1.vbs
-echo oLink.Description = "Launch BitDust software in background mode" >> CreateShortcut1.vbs
-echo oLink.WindowStyle = "2" >> CreateShortcut1.vbs
-echo oLink.Save >> CreateShortcut1.vbs
-cscript //Nologo CreateShortcut1.vbs
-if %errorlevel% neq 0 goto EXIT
-
-
-echo Set oWS = WScript.CreateObject("WScript.Shell") > CreateShortcut2.vbs
-echo sLinkFile = "%BITDUST_HOME%\DEBUG.lnk" >> CreateShortcut2.vbs
-echo Set oLink = oWS.CreateShortcut(sLinkFile) >> CreateShortcut2.vbs
-echo oLink.TargetPath = "%BITDUST_HOME%\bin\bitdustd.bat" >> CreateShortcut2.vbs
-echo oLink.Arguments = "--debug=10 show" >> CreateShortcut2.vbs
-echo oLink.WorkingDirectory = "%BITDUST_HOME%\src" >> CreateShortcut2.vbs
-echo oLink.IconLocation = "%BITDUST_HOME%\src\icons\desktop-debug.ico" >> CreateShortcut2.vbs
-echo oLink.Description = "Launch BitDust software in debug mode" >> CreateShortcut2.vbs
-echo oLink.WindowStyle = "1" >> CreateShortcut2.vbs
-echo oLink.Save >> CreateShortcut2.vbs
-cscript //Nologo CreateShortcut2.vbs
-if %errorlevel% neq 0 goto EXIT
-
-
-echo Set oWS = WScript.CreateObject("WScript.Shell") > CreateShortcut3.vbs
-echo sLinkFile = "%BITDUST_HOME%\STOP.lnk" >> CreateShortcut3.vbs
-echo Set oLink = oWS.CreateShortcut(sLinkFile) >> CreateShortcut3.vbs
-echo oLink.TargetPath = "%BITDUST_HOME%\python\pythonw.exe" >> CreateShortcut3.vbs
-echo oLink.Arguments = "bitdust.py stop" >> CreateShortcut3.vbs
-echo oLink.WorkingDirectory = "%BITDUST_HOME%\src" >> CreateShortcut3.vbs
-echo oLink.IconLocation = "%BITDUST_HOME%\src\icons\desktop-stop.ico" >> CreateShortcut3.vbs
-echo oLink.Description = "Completely stop BitDust software" >> CreateShortcut3.vbs
-echo oLink.WindowStyle = "1" >> CreateShortcut3.vbs
-echo oLink.Save >> CreateShortcut3.vbs
-cscript //Nologo CreateShortcut3.vbs
-if %errorlevel% neq 0 goto EXIT
-
-
-echo Set oWS = WScript.CreateObject("WScript.Shell") > CreateShortcut4.vbs
-echo sLinkFile = "%BITDUST_HOME%\SYNCHRONIZE.lnk" >> CreateShortcut4.vbs
-echo Set oLink = oWS.CreateShortcut(sLinkFile) >> CreateShortcut4.vbs
-echo oLink.TargetPath = "%BITDUST_HOME%\bin\bitdust-sync-restart.bat" >> CreateShortcut4.vbs
-echo oLink.Arguments = "" >> CreateShortcut4.vbs
-echo oLink.WorkingDirectory = "%BITDUST_HOME%\src" >> CreateShortcut4.vbs
-echo oLink.IconLocation = "%BITDUST_HOME%\src\icons\desktop-sync.ico" >> CreateShortcut4.vbs
-echo oLink.Description = "Synchronize BitDust sources from public repository at http://gitlab.bitdust.io/devel/bitdust/" >> CreateShortcut4.vbs
-echo oLink.WindowStyle = "1" >> CreateShortcut4.vbs
-echo oLink.Save >> CreateShortcut4.vbs
-cscript //Nologo CreateShortcut4.vbs
-if %errorlevel% neq 0 goto EXIT
-
-
-echo Set oWS = WScript.CreateObject("WScript.Shell") > CreateShortcut5.vbs
-echo sLinkFile = "%BITDUST_HOME%\SYNC&RESTART.lnk" >> CreateShortcut5.vbs
-echo Set oLink = oWS.CreateShortcut(sLinkFile) >> CreateShortcut5.vbs
-echo oLink.TargetPath = "%BITDUST_HOME%\bin\bitdust-sync-restart.bat" >> CreateShortcut5.vbs
-echo oLink.Arguments = "" >> CreateShortcut5.vbs
-echo oLink.WorkingDirectory = "%BITDUST_HOME%\src" >> CreateShortcut5.vbs
-echo oLink.IconLocation = "%BITDUST_HOME%\src\icons\desktop-sync.ico" >> CreateShortcut5.vbs
-echo oLink.Description = "Synchronize BitDust sources from public repository at http://gitlab.bitdust.io/devel/bitdust/" >> CreateShortcut5.vbs
-echo oLink.WindowStyle = "2" >> CreateShortcut5.vbs
-echo oLink.Save >> CreateShortcut5.vbs
-cscript //Nologo CreateShortcut5.vbs
-if %errorlevel% neq 0 goto EXIT
-
-
-cd /D %BITDUST_HOME%\src
-
-
-rem echo *** Prepare Django db, run command "python manage.py syncdb"
-rem call %BITDUST_HOME%\python\python.exe manage.py syncdb 
-rem if %errorlevel% neq 0 goto EXIT
-
-
+:DEPLOY_SUCCESS
 echo *** Starting BitDust ...
 cd /D "%BITDUST_HOME%"
-rem "START.lnk"
-venv\Scripts\python.exe %BITDUST_HOME%\src\bitdust.py daemon
+echo "%BITDUST_HOME%\venv\Scripts\BitDustDaemon.exe" "%BITDUST_HOME%\src\bitdust.py daemon"
+%BITDUST_HOME%\venv\Scripts\BitDustDaemon.exe %BITDUST_HOME%\src\bitdust.py daemon
 cd /D "%CURRENT_PATH%"
-rem cmd.exe /k cmd /c %FINISHED%
-exit
+echo SUCCESS
+echo.
 
-
-:EXIT
-rem pause
-exit /b %errorlevel%
