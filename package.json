@@ -1,4 +1,4 @@
-{	
+{
   "name": "bitdust-desktop",
   "author": "BitDust Contributors <bitdust.io@gmail.com> (https://bitdust.io)",
   "version": "0.1.0",
@@ -32,7 +32,18 @@
     },
     "linux": {
       "target": "deb",
-      "depends": ["gconf2", "gconf-service", "libnotify4", "libappindicator1", "libxtst6", "libnss3", "git", "gcc", "python-dev", "python-virtualenv"]
+      "depends": [
+        "gconf2",
+        "gconf-service",
+        "libnotify4",
+        "libappindicator1",
+        "libxtst6",
+        "libnss3",
+        "git",
+        "gcc",
+        "python-dev",
+        "python-virtualenv"
+      ]
     },
     "asar": false
   }
