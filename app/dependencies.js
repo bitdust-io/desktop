@@ -10,16 +10,20 @@ const deployLinux = path.resolve(__dirname,'./scripts/deploy_linux.sh')
 const deployMacOs = path.resolve(__dirname,'./scripts/deploy_osx.sh')
 const deployWin = path.resolve(__dirname,'./scripts/deploy_win.bat')
 
+let deployScript = '';
+
 const installBitdust = () => {
-    let deployScript = '';
 
     if (process.platform === 'linux') {
         deployScript = deployLinux;
     } else if (process.platform === 'darwin') {
         deployScript = deployMacOs;
-    } else if (process.platform === 'win') {
+    } else if (process.platform === 'win32') {
         deplyScript = deployWin;
-    };
+    } else {
+		log.error('Unknown platform');
+		return;
+	};
 
     return new Promise((resolve, reject) => {
     
@@ -28,7 +32,8 @@ const installBitdust = () => {
 		};
 		options.env.PATH = shellPath.sync();
 
-        let childProcess = exec(deployScript, options);
+		log.debug('Running: ' + deplyScript);
+        let childProcess = exec(deplyScript, options);
 
         childProcess.stdout.on('data', (data) => {
             const message = data.toString()
