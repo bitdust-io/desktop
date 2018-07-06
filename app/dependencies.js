@@ -19,7 +19,7 @@ const installBitdust = () => {
     } else if (process.platform === 'darwin') {
         deployScript = deployMacOs;
     } else if (process.platform === 'win32') {
-        deplyScript = deployWin;
+        deployScript = deployWin;
     } else {
 		log.error('Unknown platform');
 		return;
@@ -32,8 +32,8 @@ const installBitdust = () => {
 		};
 		options.env.PATH = shellPath.sync();
 
-		log.debug('Running: ' + deplyScript);
-        let childProcess = exec(deplyScript, options);
+		log.debug('Running: ' + deployScript);
+        let childProcess = exec(deployScript, options);
 
         childProcess.stdout.on('data', (data) => {
             const message = data.toString()
