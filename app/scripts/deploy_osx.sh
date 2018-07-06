@@ -102,7 +102,7 @@ fi
 
 echo ''
 echo '##### Starting BitDust as a daemon process'
-$GLOBAL_COMMAND_FILE daemon
+$PYTHON_BIN $BITDUST_PY daemon
 
 
 echo ''
