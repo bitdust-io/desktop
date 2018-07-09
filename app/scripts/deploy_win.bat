@@ -138,7 +138,7 @@ echo objFile.Close >> %SUBSTITUTE%
 
 
 rem echo *** Stopping Python instances
-rem taskkill  /IM BitDustDaemon.exe /F /T
+rem taskkill  /IM BitDustNode.exe /F /T
 
 
 echo *** Checking for python binaries in the destination folder %BITDUST_HOME%\python\
@@ -236,7 +236,7 @@ echo *** Installing Twisted-17.9.0-cp27-cp27m-win32.whl
 :TwistedInstalled
 
 
-if not exist %BITDUST_HOME%\src echo *** Prepare sources folder
+echo *** Prepare sources folder
 if not exist %BITDUST_HOME%\src mkdir %BITDUST_HOME%\src
 
 
@@ -265,9 +265,16 @@ echo *** Checking/Installing virtualenv
 if %errorlevel% neq 0 goto DEPLOY_ERROR
 echo *** Deploy BitDust virtual environment
 %BITDUST_HOME%\python\python.exe bitdust.py install
-copy /B /Y %BITDUST_HOME%\venv\Scripts\python.exe %BITDUST_HOME%\venv\Scripts\BitDustDaemon.exe
 if %errorlevel% neq 0 goto DEPLOY_ERROR
 :VenvExist
+
+
+set BITDUST_NODE=%BITDUST_HOME%\venv\Scripts\BitDustNode.exe
+echo *** Make sure Python "alias" created in %BITDUST_NODE%
+if exist %BITDUST_NODE% goto BitDustNodeExeExist
+copy /B /Y %BITDUST_HOME%\venv\Scripts\python.exe %BITDUST_NODE%
+echo *** Created %BITDUST_NODE% "alias" from %BITDUST_HOME%\venv\Scripts\python.exe
+:BitDustNodeExeExist
 
 
 cd /D %BITDUST_HOME%\
@@ -299,8 +306,8 @@ exit /b %errorlevel%
 :DEPLOY_SUCCESS
 echo *** Starting BitDust ...
 cd /D "%BITDUST_HOME%"
-echo "%BITDUST_HOME%\venv\Scripts\BitDustDaemon.exe" "%BITDUST_HOME%\src\bitdust.py daemon"
-%BITDUST_HOME%\venv\Scripts\BitDustDaemon.exe %BITDUST_HOME%\src\bitdust.py daemon
+echo "%BITDUST_NODE%" "%BITDUST_HOME%\src\bitdust.py daemon"
+%BITDUST_NODE% %BITDUST_HOME%\src\bitdust.py daemon
 cd /D "%CURRENT_PATH%"
 echo SUCCESS
 echo.
