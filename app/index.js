@@ -18,7 +18,7 @@ function createWindow() {
         width: 1024,
         height: 768,
         title: 'BitDust',
-		devTools: false,
+		//devTools: false,
         //titleBarStyle: 'hidden'
     });
 
@@ -32,8 +32,8 @@ function createWindow() {
             slashes: true
         }));
     }
-    win.maximize()
-    win.webContents.openDevTools()
+    //win.maximize()
+    //win.webContents.openDevTools()
 
     win.on('closed', () => {
         win = null
