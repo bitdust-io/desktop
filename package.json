@@ -1,5 +1,5 @@
 {
-  "name": "bitdust-desktop",
+  "name": "BitDustDesktop",
   "author": "BitDust Contributors <bitdust.io@gmail.com> (https://bitdust.io)",
   "version": "0.1.0",
   "main": "app/index.js",
