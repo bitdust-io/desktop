@@ -32,7 +32,7 @@ function createWindow() {
             slashes: true
         }));
     }
-    win.maximize()
+    //win.maximize()
     //win.webContents.openDevTools()
 
     win.on('closed', () => {
