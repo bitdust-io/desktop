@@ -18,11 +18,12 @@
   },
   "devDependencies": {
     "electron": "^2.0.0",
-    "electron-builder": "^20.18.0"
+    "electron-builder": "^20.20.4"
   },
   "build": {
     "appId": "com.electron.bitdust",
     "productName": "BitDust",
+    "artifactName": "BitDustDesktop.${ext}",
     "mac": {
       "category": "public.app-category.social-networking",
       "target": "dmg"
