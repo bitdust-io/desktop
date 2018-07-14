@@ -137,34 +137,42 @@ echo objFile.WriteLine strNewText >> %SUBSTITUTE%
 echo objFile.Close >> %SUBSTITUTE%
 
 
-rem echo *** Stopping Python instances
-rem taskkill  /IM BitDustNode.exe /F /T
-
-
 echo *** Checking for python binaries in the destination folder %BITDUST_HOME%\python\
 if exist %BITDUST_HOME%\python\python.exe goto PythonInstalled
 
 
-if exist python-2.7.9.msi goto PythonDownloaded 
-echo *** Downloading python-2.7.9.msi
-wget0.exe  https://www.python.org/ftp/python/2.7.9/python-2.7.9.msi --no-check-certificate 
+:PythonToBeInstalled
+if exist python-2.7.15.amd64.msi goto PythonDownloaded
+echo *** Downloading python-2.7.15.amd64.msi
+wget0.exe https://www.python.org/ftp/python/2.7.15/python-2.7.15.amd64.msi --no-check-certificate
 :PythonDownloaded
-echo *** Extracting python-2.7.9.msi to %BITDUST_HOME%\python
+echo *** Extracting python-2.7.15.amd64.msi to %BITDUST_HOME%\python
 if not exist %BITDUST_HOME%\python mkdir "%BITDUST_HOME%\python"
-cscript //Nologo %EXTRACT_SCRIPT% python-2.7.9.msi "%BITDUST_HOME%\python"
+msiexec /a "%TMPDIR%\python-2.7.15.amd64.msi" /qb TARGETDIR="%BITDUST_HOME%\python"
 echo *** Verifying Python binaries
 if exist %BITDUST_HOME%\python\python.exe goto PythonInstalled
 echo *** Python installation to %BITDUST_HOME%\python was failed!
-exit /b %errorlevel%
+goto DEPLOY_ERROR
 :PythonInstalled
 
 
-echo *** Checking Python version
-%BITDUST_HOME%\python\python.exe --version
+echo *** Identifying Python version
+%BITDUST_HOME%\python\python.exe --version 2> "%BITDUST_HOME%\python_version.txt"
+set /p PYTHON_VERSION=<"%BITDUST_HOME%\python_version.txt"
+echo "%PYTHON_VERSION%"
 if errorlevel 0 goto ContinueInstall
-echo *** Python installation to %BITDUST_HOME%\python is corrupted!
-exit /b %errorlevel%
+echo *** Python installation in %BITDUST_HOME%\python is corrupted!
+goto DEPLOY_ERROR
 :ContinueInstall
+
+
+echo *** Verifying Python version
+if "%PYTHON_VERSION%" == "Python 2.7.15" goto PythonVersionOK
+echo *** Stopping BitDustNode instance
+taskkill  /IM BitDustNode.exe /F /T
+del /q /f /s %BITDUST_HOME%\python
+goto PythonToBeInstalled
+:PythonVersionOK
 
 
 echo *** Checking for pip installed
@@ -201,17 +209,19 @@ echo *** Installing pywin32
 
 echo *** Checking for PyCrypto installed
 if exist %BITDUST_HOME%\python\Lib\site-packages\Crypto\__init__.py goto PyCryptoInstalled
-if exist pycrypto-2.6.win32-py2.7.exe  goto PyCryptoDownloaded 
-echo *** Downloading pycrypto-2.6.win32-py2.7.exe
-wget0.exe  "http://www.voidspace.org.uk/downloads/pycrypto26/pycrypto-2.6.win32-py2.7.exe" --no-check-certificate 
+if exist pycrypto-2.6.win-amd64-py2.7.exe  goto PyCryptoDownloaded
+echo *** Downloading pycrypto-2.6.win-amd64-py2.7.exe
+wget0.exe www.voidspace.org.uk/downloads/pycrypto26/pycrypto-2.6.win-amd64-py2.7.exe  --no-check-certificate 
 if %errorlevel% neq 0 goto DEPLOY_ERROR
 :PyCryptoDownloaded
-echo *** Installing pycrypto-2.6.win32-py2.7.exe
-unzip.exe -o -q pycrypto-2.6.win32-py2.7.exe -d pycrypto
+echo *** Installing pycrypto-2.6.win-amd64-py2.7.exe
+del /q /s /f pycrypto
+unzip.exe -o -q pycrypto-2.6.win-amd64-py2.7.exe -d pycrypto
 xcopy pycrypto\PLATLIB\*.* %BITDUST_HOME%\python\Lib\site-packages /E /I /Q /Y
 :PyCryptoInstalled
 
 
+goto IncrementalInstalled
 echo *** Checking for Incremental installed
 if exist %BITDUST_HOME%\python\Lib\site-packages\incremental\__init__.py goto IncrementalInstalled
 if exist incremental-17.5.0-py2.py3-none-any.whl  goto IncrementalDownloaded 
@@ -224,6 +234,7 @@ echo *** Installing incremental-17.5.0-py2.py3-none-any.whl
 :IncrementalInstalled
 
 
+goto TwistedInstalled
 echo *** Checking for Twisted installed
 if exist %BITDUST_HOME%\python\Lib\site-packages\twisted\__init__.py goto TwistedInstalled
 if exist Twisted-17.9.0-cp27-cp27m-win32.whl  goto TwistedDownloaded 
@@ -279,6 +290,7 @@ echo *** Created %BITDUST_NODE% "alias" from %BITDUST_HOME%\venv\Scripts\python.
 
 cd /D %BITDUST_HOME%\
 
+
 if exist %BITDUST_HOME%\ui\index.html goto UISourcesExist
 echo *** Downloading BitDust UI using "git clone" from GitHub devel repository
 %BITDUST_HOME%\git\bin\git.exe clone -q --depth 1 https://github.com/bitdust-io/web.git ui
@@ -296,6 +308,7 @@ echo *** Running command "git pull" in BitDust UI repository
 
 
 goto DEPLOY_SUCCESS
+
 
 :DEPLOY_ERROR
 echo DEPLOYMENT FAILED
