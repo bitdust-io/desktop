@@ -21,7 +21,7 @@ echo *** Prepare short path to the data folder
 echo @echo OFF > "%SHORT_PATH_SCRIPT%"
 echo echo %%~s1 >> "%SHORT_PATH_SCRIPT%"
 call "%SHORT_PATH_SCRIPT%" "%BITDUST_FULL_HOME%" > "%SHORT_PATH_OUT%"
-del /Q "%SHORT_PATH_SCRIPT%"
+del /q /s /f "%SHORT_PATH_SCRIPT%" >nul 2>&1
 
 
 :ShortPathKnown
@@ -112,7 +112,7 @@ cscript //Nologo %DLOAD_SCRIPT% https://eternallybored.org/misc/wget/1.19.4/32/w
 
 if exist unzip.exe goto UnZIPDownloaded 
 echo *** Downloading unzip.exe
-wget0.exe  http://www2.cs.uidaho.edu/~jeffery/win32/unzip.exe --no-check-certificate 
+wget0.exe -q --no-check-certificate http://www2.cs.uidaho.edu/~jeffery/win32/unzip.exe 
 :UnZIPDownloaded
 
 
@@ -144,7 +144,7 @@ if exist %BITDUST_HOME%\python\python.exe goto PythonInstalled
 :PythonToBeInstalled
 if exist python-2.7.15.amd64.msi goto PythonDownloaded
 echo *** Downloading python-2.7.15.amd64.msi
-wget0.exe https://www.python.org/ftp/python/2.7.15/python-2.7.15.amd64.msi --no-check-certificate
+wget0.exe -q --no-check-certificate https://www.python.org/ftp/python/2.7.15/python-2.7.15.amd64.msi
 :PythonDownloaded
 echo *** Extracting python-2.7.15.amd64.msi to %BITDUST_HOME%\python
 if not exist %BITDUST_HOME%\python mkdir "%BITDUST_HOME%\python"
@@ -170,7 +170,7 @@ echo *** Verifying Python version
 if "%PYTHON_VERSION%" == "Python 2.7.15" goto PythonVersionOK
 echo *** Stopping BitDustNode instance
 taskkill  /IM BitDustNode.exe /F /T
-del /q /f /s %BITDUST_HOME%\python
+del /q /f /s %BITDUST_HOME%\python >nul 2>&1
 goto PythonToBeInstalled
 :PythonVersionOK
 
@@ -178,8 +178,8 @@ goto PythonToBeInstalled
 echo *** Checking for pip installed
 if exist %BITDUST_HOME%\python\Scripts\pip.exe goto PipInstalled
 echo *** Installing pip
-del /F /Q get-pip.py
-wget0.exe https://bootstrap.pypa.io/get-pip.py --no-check-certificate
+del /F /Q get-pip.py >nul 2>&1
+wget0.exe -q --no-check-certificate https://bootstrap.pypa.io/get-pip.py
 %BITDUST_HOME%\python\python.exe get-pip.py
 if %errorlevel% neq 0 goto DEPLOY_ERROR
 :PipInstalled
@@ -189,7 +189,7 @@ echo *** Checking for git binaries in the destination folder
 if exist %BITDUST_HOME%\git\bin\git.exe goto GitInstalled
 if exist Git-2.10.0-32-bit.exe goto GitDownloaded 
 echo *** Downloading Git-2.10.0-32-bit.exe
-wget0.exe https://github.com/git-for-windows/git/releases/download/v2.10.0.windows.1/Git-2.10.0-32-bit.exe --no-check-certificate
+wget0.exe -q --no-check-certificate https://github.com/git-for-windows/git/releases/download/v2.10.0.windows.1/Git-2.10.0-32-bit.exe
 if %errorlevel% neq 0 goto DEPLOY_ERROR
 :GitDownloaded
 echo *** Extracting Git-2.10.0-32-bit.exe to %TMPDIR%\git_temp
@@ -202,8 +202,16 @@ if %errorlevel% neq 0 goto DEPLOY_ERROR
 
 echo *** Checking for pywin32 installed
 if exist %BITDUST_HOME%\python\Lib\site-packages\win32\win32api.pyd goto PyWin32Installed
-echo *** Installing pywin32
-%BITDUST_HOME%\python\Scripts\pip.exe install pywin32
+if exist pywin32-223.win-amd64-py2.7.exe  goto PyWin32Downloaded
+echo *** Downloading pywin32-223.win-amd64-py2.7.exe
+wget0.exe -q --no-check-certificate https://github.com/mhammond/pywin32/releases/download/b223/pywin32-223.win-amd64-py2.7.exe
+if %errorlevel% neq 0 goto DEPLOY_ERROR
+:PyWin32Downloaded
+echo *** Installing pywin32-223.win-amd64-py2.7.exe
+del /q /s /f pywin32 >nul 2>&1
+unzip.exe -o -q pywin32-223.win-amd64-py2.7.exe -d pywin32
+xcopy pywin32\PLATLIB\*.* %BITDUST_HOME%\python\Lib\site-packages /E /I /Q /Y
+%BITDUST_HOME%\python\python.exe pywin32\SCRIPTS\pywin32_postinstall.py -install
 :PyWin32Installed
 
 
@@ -211,11 +219,11 @@ echo *** Checking for PyCrypto installed
 if exist %BITDUST_HOME%\python\Lib\site-packages\Crypto\__init__.py goto PyCryptoInstalled
 if exist pycrypto-2.6.win-amd64-py2.7.exe  goto PyCryptoDownloaded
 echo *** Downloading pycrypto-2.6.win-amd64-py2.7.exe
-wget0.exe www.voidspace.org.uk/downloads/pycrypto26/pycrypto-2.6.win-amd64-py2.7.exe  --no-check-certificate 
+wget0.exe -q --no-check-certificate www.voidspace.org.uk/downloads/pycrypto26/pycrypto-2.6.win-amd64-py2.7.exe
 if %errorlevel% neq 0 goto DEPLOY_ERROR
 :PyCryptoDownloaded
 echo *** Installing pycrypto-2.6.win-amd64-py2.7.exe
-del /q /s /f pycrypto
+del /q /s /f pycrypto >nul 2>&1
 unzip.exe -o -q pycrypto-2.6.win-amd64-py2.7.exe -d pycrypto
 xcopy pycrypto\PLATLIB\*.* %BITDUST_HOME%\python\Lib\site-packages /E /I /Q /Y
 :PyCryptoInstalled
@@ -226,7 +234,7 @@ echo *** Checking for Incremental installed
 if exist %BITDUST_HOME%\python\Lib\site-packages\incremental\__init__.py goto IncrementalInstalled
 if exist incremental-17.5.0-py2.py3-none-any.whl  goto IncrementalDownloaded 
 echo *** Downloading incremental-17.5.0-py2.py3-none-any.whl
-wget0.exe  "https://files.pythonhosted.org/packages/f5/1d/c98a587dc06e107115cf4a58b49de20b19222c83d75335a192052af4c4b7/incremental-17.5.0-py2.py3-none-any.whl" --no-check-certificate 
+wget0.exe -q --no-check-certificate "https://files.pythonhosted.org/packages/f5/1d/c98a587dc06e107115cf4a58b49de20b19222c83d75335a192052af4c4b7/incremental-17.5.0-py2.py3-none-any.whl"
 if %errorlevel% neq 0 goto DEPLOY_ERROR
 :IncrementalDownloaded
 echo *** Installing incremental-17.5.0-py2.py3-none-any.whl
@@ -239,7 +247,7 @@ echo *** Checking for Twisted installed
 if exist %BITDUST_HOME%\python\Lib\site-packages\twisted\__init__.py goto TwistedInstalled
 if exist Twisted-17.9.0-cp27-cp27m-win32.whl  goto TwistedDownloaded 
 echo *** Downloading Twisted-17.9.0-cp27-cp27m-win32.whl
-wget0.exe "https://github.com/zerodhatech/python-wheels/raw/master/Twisted-17.9.0-cp27-cp27m-win32.whl" --no-check-certificate 
+wget0.exe -q --no-check-certificate "https://github.com/zerodhatech/python-wheels/raw/master/Twisted-17.9.0-cp27-cp27m-win32.whl"
 if %errorlevel% neq 0 goto DEPLOY_ERROR
 :TwistedDownloaded
 echo *** Installing Twisted-17.9.0-cp27-cp27m-win32.whl
