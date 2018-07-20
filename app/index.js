@@ -53,7 +53,7 @@ function createSplashScreen() {
         width: 500, height: 350,
         center: true,
         frame: true,
-        resizable: false, movable: false, minimizable: false, maximizable: false,
+        resizable: false, movable: true, minimizable: false, maximizable: false,
         alwaysOnTop: true, skipTaskbar: true,
     });
     splashScreen.loadURL(url.format({
