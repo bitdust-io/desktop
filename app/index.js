@@ -40,9 +40,15 @@ function createWindow() {
     });
 }
 
+function sleep() {
+    return new Promise((resolve, reject) => {
+        setTimeout(resolve, 20000)
+    })
+}
+
 function createSplashScreen() {
     const splashScreen = new BrowserWindow({
-        width: 400, height: 241,
+        width: 500, height: 320,
         center: true,
         frame: false, resizable: false, movable: false, minimizable: false, maximizable: false,
         alwaysOnTop: true, skipTaskbar: true,
@@ -65,7 +71,7 @@ async function init() {
         const splashScreen = createSplashScreen()
 		log.debug('Target platform: ' + process.platform);
         await installBitdust()
-		// TODO: if installBitdust() failed - do not show splash screen at all.
+		//await sleep()
         splashScreen.close()
         createWindow()
     } catch (error) {
