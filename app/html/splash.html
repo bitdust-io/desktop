@@ -6,18 +6,42 @@
     <meta name=viewport content="width=device-width,initial-scale=1">
     <title>BitDust Web</title>
     <meta name=description content="bit-dust web">
+    <style>
+        body,
+        html {
+            background: #fff
+        }
+        #output {
+            height: 200px;
+            overflow: scroll;
+            color: rgb(42,177,37);
+            background: black;
+            font-family: monospace;
+            visibility: hidden;
+        }
+    </style>
 </head>
 
 <body>
-    <h1>Bitdust</h1>
+    <h1>Starting BitDust...</h1>
     <div id="output"></div>
+    <label><input type="checkbox" id="toggleDebug">display debug information</label>
 </body>
 
 <script>
     const output = document.getElementById('output')
+    const toggleButton = document.getElementById('toggleDebug')
     const ipc = window.require('electron').ipcRenderer
     ipc.on('updateProgressBar', function (event, arg) {
-        output.innerHTML = arg.replace(/\n/g, '<br/>')
+        output.innerHTML += arg.replace(/\n/g, '<br/>')
+        output.scrollTop = output.scrollHeight;
+    });
+    toggleButton.addEventListener('click', function(e) {
+        if (this.checked) {
+            output.style.visibility = 'visible';
+        } else {
+            output.style.visibility = 'hidden';
+        }
     });
 </script>
 

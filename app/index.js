@@ -8,6 +8,7 @@ const ipc = require('electron').ipcMain
 const { installBitdust } = require('./dependencies');
 
 let win;
+let isStarting = true;
 
 const uiDir = `${os.homedir()}/.bitdust/ui`
 
@@ -32,6 +33,7 @@ function createWindow() {
             slashes: true
         }));
     }
+    isStarting = false;
     //win.maximize()
     //win.webContents.openDevTools()
 
@@ -40,11 +42,18 @@ function createWindow() {
     });
 }
 
+function sleep() {
+    return new Promise((resolve, reject) => {
+        setTimeout(resolve, 20000)
+    })
+}
+
 function createSplashScreen() {
     const splashScreen = new BrowserWindow({
-        width: 400, height: 241,
+        width: 500, height: 350,
         center: true,
-        frame: false, resizable: false, movable: false, minimizable: false, maximizable: false,
+        frame: true,
+        resizable: false, movable: true, minimizable: false, maximizable: false,
         alwaysOnTop: true, skipTaskbar: true,
     });
     splashScreen.loadURL(url.format({
@@ -65,11 +74,12 @@ async function init() {
         const splashScreen = createSplashScreen()
 		log.debug('Target platform: ' + process.platform);
         await installBitdust()
-		// TODO: if installBitdust() failed - do not show splash screen at all.
+		//await sleep()
         splashScreen.close()
         createWindow()
     } catch (error) {
-        log.error(error);
+        isStarting = false
+        log.error(error)
     }
 }
 
@@ -80,8 +90,8 @@ app.on('ready', init);
 app.on('window-all-closed', () => {
     // On macOS it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q
-    if (process.platform !== 'darwin') {
-        //app.quit()
+    if (!isStarting) {
+        app.quit()
     }
 });
 
