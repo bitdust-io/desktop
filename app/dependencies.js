@@ -45,7 +45,6 @@ const installBitdust = () => {
             const errmessage = data.toString()
             ipc.emit('installationStep', errmessage)
             log.warn(errmessage)
-            reject(errmessage)
         });
 
         childProcess.stdout.on('error', reject);
