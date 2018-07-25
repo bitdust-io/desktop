@@ -12,6 +12,7 @@
     "dist-deb": "electron-builder --linux deb"
   },
   "dependencies": {
+    "ajv": "^6.5.2",
     "electron-log": "^2.2.16",
     "fix-path": "^2.1.0",
     "shell-path": "^2.1.0"
