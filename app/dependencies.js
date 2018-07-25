@@ -53,5 +53,5 @@ const installBitDust = () => {
 }
 
 module.exports = {
-    installBitdust
+    installBitDust
 }
