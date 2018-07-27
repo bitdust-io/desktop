@@ -50,12 +50,11 @@ fi
 if [[ ! $pipok ]]; then
     echo ''
     echo '##### Installing PIP for current user'
-    pip install --upgrade --user
+    easy_install --user pip
     pip install --upgrade pip --user
-
     echo ''
     echo '##### Installing virtualenv for current user'
-    pip install virtualenv --user
+    pip install --upgrade virtualenv --user
 else
     echo ''
     echo '##### PIP already installed'

@@ -7,7 +7,7 @@ const ipc = require('electron').ipcMain
 const request = require('request')
 const { exec } = require('child_process')
 
-const { installBitdust } = require('./dependencies');
+const { installBitDust } = require('./dependencies');
 
 let win;
 let isStarting = true;
@@ -28,7 +28,7 @@ function createWindow() {
     if (process.env.ELECTRON_ENV === 'debug') {
         win.loadURL('http://localhost:8080/');
     } else {
-		log.debug('Opening main UI page: ' + path.join(uiDir, 'dist/index.html'));
+		log.warn('Opening main UI page: ' + path.join(uiDir, 'dist/index.html'));
         win.loadURL(url.format({
             pathname: path.join(uiDir, 'dist/index.html'),
             protocol: 'file:',
@@ -44,13 +44,14 @@ function createWindow() {
     });
 }
 
-function sleep() {
-    return new Promise((resolve, reject) => {
-        setTimeout(resolve, 20000)
-    })
-}
+//function sleep() {
+//    return new Promise((resolve, reject) => {
+//        setTimeout(resolve, 200000)
+//    })
+//}
 
 function createSplashScreen() {
+	log.warn('createSplashScreen')
     const splashScreen = new BrowserWindow({
         width: 500, height: 350,
         center: true,
@@ -80,10 +81,12 @@ function runHealthCheck() {
 async function init() {
     try {
         const splashScreen = createSplashScreen()
-		log.debug('Target platform: ' + process.platform);
-        await installBitdust()
+		log.warn('Target platform: ' + process.platform)
+        await installBitDust()
+		log.warn('installBitDust DONE')
 		//await sleep()
         splashScreen.close()
+		log.warn('init DONE : createWindow')
         createWindow()
         setInterval(runHealthCheck, 10000)
     } catch (error) {
@@ -100,6 +103,7 @@ app.on('window-all-closed', () => {
     // On macOS it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q
     if (!isStarting) {
+		log.warn('window-all-closed : app.quit')
         app.quit()
     }
 });
@@ -108,6 +112,7 @@ app.on('activate', () => {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (win === null) {
+		log.warn('activate : createWindow')
         createWindow()
     }
 });
