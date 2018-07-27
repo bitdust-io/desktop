@@ -25,6 +25,9 @@ fi
 gitok=`which git`
 pythonok=`brew list | grep python`
 pipok=`which pip`
+pipuserok=`PATH="$HOME/Library/Python/2.7/bin:$PATH" which pip`
+venvok=`which virtualenv`
+venvuserok=`PATH="$HOME/Library/Python/2.7/bin:$PATH" which virtualenv`
 
 
 if [[ ! $gitok ]]; then
@@ -48,16 +51,32 @@ fi
 
 
 if [[ ! $pipok ]]; then
-    echo ''
-    echo '##### Installing PIP for current user'
-    easy_install --user pip
-    pip install --upgrade pip --user
-    echo ''
-    echo '##### Installing virtualenv for current user'
-    pip install --upgrade virtualenv --user
+    if [[ ! $pipuserok ]]; then
+        echo ''
+        echo '##### Installing PIP for current user'
+        python -m ensurepip -U -v --user
+    else
+        echo ''
+        echo '##### PIP already installed for current user'
+    fi
 else
     echo ''
-    echo '##### PIP already installed'
+    echo '##### PIP already installed globally'
+fi
+
+
+if [[ ! $venvok ]]; then
+    if [[ ! $venvuserok ]]; then
+        echo ''
+        echo '##### Installing Virtualenv for current user'
+        python -m pip install --upgrade virtualenv --user
+    else
+        echo ''
+        echo '##### Virtualenv already installed for current user'
+    fi
+else
+    echo ''
+    echo '##### Virtualenv already installed globally'
 fi
 
 
@@ -89,7 +108,7 @@ fi
 if [[ ! -e $VENV_DIR ]]; then
     echo ''
     echo '##### Building BitDust virtual environment...'
-    python $BITDUST_PY install
+    PATH="$HOME/Library/Python/2.7/bin:$PATH" python $BITDUST_PY install
     ln -s -f $BITDUST_COMMAND_FILE $GLOBAL_COMMAND_FILE
     echo ''
     echo '##### System-wide shell command for BitDust created in ${GLOBAL_COMMAND_FILE}'
