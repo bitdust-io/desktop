@@ -4,6 +4,8 @@ const url = require('url')
 const os = require('os')
 const log = require('electron-log')
 const ipc = require('electron').ipcMain
+const request = require('request')
+const { exec } = require('child_process')
 
 const { installBitdust } = require('./dependencies');
 
@@ -69,6 +71,12 @@ function createSplashScreen() {
 }
 
 
+function runHealthCheck() {
+    request('http://localhost:8180/process/health/v1', (err, res, body) => {
+        if (err) exec("bitdust start")
+    });
+}
+
 async function init() {
     try {
         const splashScreen = createSplashScreen()
@@ -77,6 +85,7 @@ async function init() {
 		//await sleep()
         splashScreen.close()
         createWindow()
+        setInterval(runHealthCheck, 10000)
     } catch (error) {
         isStarting = false
         log.error(error)
