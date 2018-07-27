@@ -7,7 +7,7 @@ const ipc = require('electron').ipcMain
 const request = require('request')
 const { exec } = require('child_process')
 
-const { installBitDust } = require('./dependencies');
+const { runBitDust } = require('./dependencies');
 
 let win;
 let isStarting = true;
@@ -67,28 +67,35 @@ function createSplashScreen() {
     ipc.on('installationStep', (message) => {
         splashScreen.webContents.send('updateProgressBar', message)
     })
-
+    splashScreen.on('closed', () => {
+        ipc.removeAllListeners('installationStep')
+    });
     return splashScreen
 }
 
 
 function runHealthCheck() {
-    request('http://localhost:8180/process/health/v1', (err, res, body) => {
-        if (err) exec("bitdust start")
-    });
+    setTimeout(() => {
+        request('http://localhost:8180/process/health/v1', async (err, res, body) => {
+            if (err) {
+                await runBitDust()
+            }
+            runHealthCheck()
+        });
+    }, 10000)
 }
 
 async function init() {
     try {
         const splashScreen = createSplashScreen()
-		log.warn('Target platform: ' + process.platform)
-        await installBitDust()
-		log.warn('installBitDust DONE')
+        log.warn('Target platform: ' + process.platform)
+        await runBitDust()
+        log.warn('installBitDust DONE')
 		//await sleep()
         splashScreen.close()
 		log.warn('init DONE : createWindow')
         createWindow()
-        setInterval(runHealthCheck, 10000)
+        runHealthCheck()
     } catch (error) {
         isStarting = false
         log.error(error)
