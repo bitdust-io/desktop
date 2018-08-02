@@ -12,7 +12,7 @@ const deployWin = path.resolve(__dirname,'./scripts/deploy_win.bat')
 
 let deployScript = '';
 
-const installBitDust = () => {
+const runBitDust = () => {
 
     if (process.platform === 'linux') {
         deployScript = deployLinux;
@@ -53,5 +53,5 @@ const installBitDust = () => {
 }
 
 module.exports = {
-    installBitDust
+    runBitDust
 }
