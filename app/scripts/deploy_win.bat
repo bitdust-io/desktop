@@ -279,13 +279,17 @@ echo *** Running command "git pull" in BitDust repository
 
 echo *** Checking BitDust virtual environment
 if exist %BITDUST_HOME%\venv goto VenvExist
-echo *** Checking/Installing virtualenv
+echo *** Checking/Installing virtualenv tool
 %BITDUST_HOME%\python\Scripts\pip.exe install virtualenv
 if %errorlevel% neq 0 goto DEPLOY_ERROR
 echo *** Deploy BitDust virtual environment
 %BITDUST_HOME%\python\python.exe bitdust.py install
 if %errorlevel% neq 0 goto DEPLOY_ERROR
+goto VenvOk
 :VenvExist
+echo *** Update BitDust requirements
+%BITDUST_HOME%\python\Scripts\pip.exe install -U -r %BITDUST_HOME%\src\requirements.txt
+:VenvOk
 
 
 set BITDUST_NODE=%BITDUST_HOME%\venv\Scripts\BitDustNode.exe

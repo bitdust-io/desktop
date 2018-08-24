@@ -46,7 +46,8 @@ if [ ! -d $VENV_DIR ]; then
     echo '##### System-wide shell command "bitdust" was created'
 else
     echo ''
-    echo '##### BitDust virtual environment already exist'
+    echo '##### BitDust virtual environment already exist, updating...'
+    $PIP_BIN install -U -r $SOURCE_DIR/requirements.txt
 fi
 
 
