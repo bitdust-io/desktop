@@ -95,7 +95,11 @@ async function init() {
         splashScreen.close()
 		log.warn('init DONE : createWindow')
         createWindow()
-        runHealthCheck()
+        // TODO: current implementaion of health check making troubles during development.
+        // because when bitdust node is stopped (intentionally by developer) it is restarting it automatically
+        // which is not what developer wants...
+        // lets just hide everything in the UI if node is down and show "restart" button?
+        // runHealthCheck()
     } catch (error) {
         isStarting = false
         log.error(error)
