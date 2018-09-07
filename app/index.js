@@ -107,6 +107,8 @@ async function init() {
 }
 
 
+ipc.on('restart', runBitDust)
+
 app.on('ready', init);
 
 // Quit when all windows are closed.
