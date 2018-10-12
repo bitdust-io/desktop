@@ -99,8 +99,8 @@ if [[ ! -e $SOURCE_UI_DIR ]]; then
     git clone --depth=1 https://github.com/bitdust-io/web.git $SOURCE_UI_DIR
 else
     cd $SOURCE_UI_DIR
-    git fetch
-    git reset --hard origin/master
+    # git fetch
+    # git reset --hard origin/master
     echo '##### Updating the source code of BitDust UI...'
 fi
 

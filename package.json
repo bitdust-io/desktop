@@ -12,7 +12,6 @@
     "dist-deb": "electron-builder --linux deb"
   },
   "dependencies": {
-    "ajv": "^6.5.2",
     "electron-log": "^2.2.16",
     "request": "^2.87.0",
     "shell-path": "^2.1.0"
@@ -30,7 +29,11 @@
       "target": "dmg"
     },
     "win": {
-      "target": "nsis"
+      "target": [
+        {
+          "target": "nsis"
+        }
+      ]
     },
     "linux": {
       "target": "deb",
