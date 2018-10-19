@@ -25,10 +25,12 @@
     "productName": "BitDust",
     "artifactName": "BitDustDesktop.${ext}",
     "mac": {
+      "icon": "build_resources/bitdust.icns",
       "category": "public.app-category.social-networking",
       "target": "dmg"
     },
     "win": {
+      "icon": "build_resources/bitdust.icns",
       "target": [
         {
           "target": "nsis"
@@ -36,6 +38,7 @@
       ]
     },
     "linux": {
+      "icon": "build_resources/bitdust.icns",
       "target": "deb",
       "depends": [
         "gconf2",
