@@ -6,7 +6,7 @@ const exec = require('child_process').exec
 
 const request = require('request')
 const log = require('electron-log')
-
+const path = require('path')
 
 const setup = require('./setup')
 const ui = require('./ui')
@@ -29,22 +29,25 @@ let showExitPrompt = true;
 
 
 function showDialogOnExit(e, app) {
+
     if (showExitPrompt) {
         e.preventDefault();
 
         dialog.showMessageBox({
             type: 'question',
-            buttons: ['Yes', 'No'],
-            defaultId: 1,
-            cancelId: 1,
+            buttons: ['Keep running in the background', 'Stop BitDust', 'Cancel'],
+            defaultId: 0,
+            cancelId: 2,
             title: 'Confirm',
-            message: 'Do you want to close BitDust and stop all related processes?'
+            message: 'Do you want to run BitDust in the background or stop it completely?'
         }, (response) => {
             if (response === 0) {
-                setup.stopBitDust()
+				win.hide()
+			} else if (response === 1) {
+				setup.stopBitDust()
                 showExitPrompt = false
                 app.quit()
-            }
+			}
         })
     }
 }
@@ -62,14 +65,16 @@ function runHealthCheck() {
 }
 
 async function init() {
-    
     try {
         const splashScreen = ui.createSplashScreen()
         await setup.runBitDust()
         log.warn('installBitDust DONE')
         splashScreen.close()
 		log.warn('init DONE : createWindow')
-        ui.createMainWindow(win)
+        win = ui.createMainWindow()
+		win.on('closed', () => {
+			win = null
+		})
         isStarting = false
         // runHealthCheck()
     } catch (error) {
@@ -80,39 +85,23 @@ async function init() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ipc.on('restart', setup.runBitDust)
 
 app.on('ready', () => {
-    // tray = new Tray('/Users/agrishun/dev/bitdust/desktop/icon.png')
-    // const contextMenu = Menu.buildFromTemplate([
-    //   {label: 'Item1', type: 'radio'},
-    //   {label: 'Item2', type: 'radio'},
-    //   {label: 'Item3', type: 'radio', checked: true},
-    //   {label: 'Item4', type: 'radio'}
-    // ])
+    // tray = new Tray(path.resolve('build_resources/bitdust.icns'))
     // tray.setToolTip('BitDust')
-    // tray.setContextMenu(contextMenu)
+	// tray.on('click', () => {
+	// 	if (win) {
+	// 	  if (!win.isVisible()) {
+	// 		  win.show()
+	// 	  }
+	// 	} else {
+	// 	  win = ui.createMainWindow()
+	// 	  win.on('closed', () => {
+	// 		win = null
+	// 	  })
+	// 	} 
+    // })
     init()
 });
 
@@ -120,16 +109,19 @@ app.on('ready', () => {
 app.on('window-all-closed', () => {
     // On macOS it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q
-    // if (!isStarting) {
-	// 	log.warn('window-all-closed : app.quit')
-    //     app.quit()
+    // if (isStarting === false) {
+		// log.warn('window-all-closed : app.quit')
+		// app.quit()
     // }
 });
 
+// Mac OS only
 app.on('activate', () => {
     if (win === null) {
 		log.warn('activate : createWindow')
         ui.createMainWindow()
+    } else if (!win.isVisible()) {
+        win.show()
     }
 });
 

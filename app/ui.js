@@ -37,8 +37,8 @@ function createSplashScreen() {
     return splashScreen
 }
 
-function createMainWindow(win) {
-    win = new BrowserWindow({
+function createMainWindow() {
+    const win = new BrowserWindow({
         minWidth: 600,
         minHeight: 400,
         width: 1024,
@@ -58,9 +58,7 @@ function createMainWindow(win) {
             slashes: true
         }))
     }
-    win.on('closed', () => {
-        win = null
-    })
+	return win
 }
 
 module.exports = {
