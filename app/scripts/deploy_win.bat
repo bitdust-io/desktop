@@ -215,20 +215,6 @@ xcopy pywin32\PLATLIB\*.* %BITDUST_HOME%\python\Lib\site-packages /E /I /Q /Y
 :PyWin32Installed
 
 
-echo *** Checking for PyCrypto installed
-if exist %BITDUST_HOME%\python\Lib\site-packages\Crypto\__init__.py goto PyCryptoInstalled
-if exist pycrypto-2.6.win-amd64-py2.7.exe  goto PyCryptoDownloaded
-echo *** Downloading pycrypto-2.6.win-amd64-py2.7.exe
-wget0.exe -q --no-check-certificate www.voidspace.org.uk/downloads/pycrypto26/pycrypto-2.6.win-amd64-py2.7.exe
-if %errorlevel% neq 0 goto DEPLOY_ERROR
-:PyCryptoDownloaded
-echo *** Installing pycrypto-2.6.win-amd64-py2.7.exe
-del /q /s /f pycrypto >nul 2>&1
-unzip.exe -o -q pycrypto-2.6.win-amd64-py2.7.exe -d pycrypto
-xcopy pycrypto\PLATLIB\*.* %BITDUST_HOME%\python\Lib\site-packages /E /I /Q /Y
-:PyCryptoInstalled
-
-
 goto IncrementalInstalled
 echo *** Checking for Incremental installed
 if exist %BITDUST_HOME%\python\Lib\site-packages\incremental\__init__.py goto IncrementalInstalled
