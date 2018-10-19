@@ -26,7 +26,18 @@ let showExitPrompt = true;
 //await sleep()
 
 
-
+function showWindow() {
+    if (win) {
+        if (!win.isVisible()) {
+            win.show()
+        }
+    } else {
+        win = ui.createMainWindow()
+        win.on('closed', () => {
+            win = null
+        })
+    } 
+}
 
 function showDialogOnExit(e, app) {
 
@@ -42,7 +53,9 @@ function showDialogOnExit(e, app) {
             message: 'Do you want to run BitDust in the background or stop it completely?'
         }, (response) => {
             if (response === 0) {
-				win.hide()
+				if (win && win.isVisible()) {
+					win.hide()
+				}
 			} else if (response === 1) {
 				setup.stopBitDust()
                 showExitPrompt = false
@@ -76,7 +89,7 @@ async function init() {
 			win = null
 		})
         isStarting = false
-        // runHealthCheck()
+        runHealthCheck()
     } catch (error) {
         isStarting = false
         log.error(error)
@@ -88,41 +101,24 @@ async function init() {
 ipc.on('restart', setup.runBitDust)
 
 app.on('ready', () => {
-    // tray = new Tray(path.resolve('build_resources/bitdust.icns'))
-    // tray.setToolTip('BitDust')
-	// tray.on('click', () => {
-	// 	if (win) {
-	// 	  if (!win.isVisible()) {
-	// 		  win.show()
-	// 	  }
-	// 	} else {
-	// 	  win = ui.createMainWindow()
-	// 	  win.on('closed', () => {
-	// 		win = null
-	// 	  })
-	// 	} 
-    // })
+	if (process.platform === 'win32') {
+		const iconPath = path.join(__dirname, '..', 'build_resources', 'bitdust2.ico')
+		tray = new Tray(iconPath)
+		tray.setToolTip('BitDust')
+		tray.on('click', showWindow)
+	}
     init()
 });
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
-    // On macOS it is common for applications and their menu bar
-    // to stay active until the user quits explicitly with Cmd + Q
-    // if (isStarting === false) {
-		// log.warn('window-all-closed : app.quit')
-		// app.quit()
-    // }
+    if (isStarting === false) {
+		log.warn('window-all-closed : app.quit')
+		app.hide()
+    }
 });
 
 // Mac OS only
-app.on('activate', () => {
-    if (win === null) {
-		log.warn('activate : createWindow')
-        ui.createMainWindow()
-    } else if (!win.isVisible()) {
-        win.show()
-    }
-});
+app.on('activate', () => showWindow);
 
 app.on('before-quit', (e) => showDialogOnExit(e, app));

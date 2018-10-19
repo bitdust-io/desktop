@@ -49,7 +49,11 @@ const runBitDust = () => {
 
 const stopBitDust = () => {
     log.debug('Stopping bitdust');
-    const childProcess = exec('bitdust stop', options);
+	if (process.platform === 'win32') {
+		exec('taskkill  /IM BitDustNode.exe /F /T', options)
+	} else {
+		exec('bitdust stop', options);
+	}
 }
 
 module.exports = {

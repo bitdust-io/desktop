@@ -30,7 +30,7 @@
       "target": "dmg"
     },
     "win": {
-      "icon": "build_resources/bitdust.icns",
+      "icon": "build_resources/bitdust.ico",
       "target": [
         {
           "target": "nsis"
