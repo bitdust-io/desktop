@@ -12,7 +12,6 @@
     "dist-deb": "electron-builder --linux deb"
   },
   "dependencies": {
-    "ajv": "^6.5.2",
     "electron-log": "^2.2.16",
     "request": "^2.87.0",
     "shell-path": "^2.1.0"
@@ -26,13 +25,20 @@
     "productName": "BitDust",
     "artifactName": "BitDustDesktop.${ext}",
     "mac": {
+      "icon": "build_resources/bitdust.icns",
       "category": "public.app-category.social-networking",
       "target": "dmg"
     },
     "win": {
-      "target": "nsis"
+      "icon": "build_resources/bitdust.ico",
+      "target": [
+        {
+          "target": "nsis"
+        }
+      ]
     },
     "linux": {
+      "icon": "build_resources/bitdust.icns",
       "target": "deb",
       "depends": [
         "gconf2",
