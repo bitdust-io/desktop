@@ -17,15 +17,15 @@
     "shell-path": "^2.1.0"
   },
   "devDependencies": {
-    "electron": "^2.0.0",
-    "electron-builder": "^20.20.4"
+    "electron": "^3.0.4",
+    "electron-builder": "^20.28.4"
   },
   "build": {
     "appId": "com.electron.bitdust",
     "productName": "BitDust",
     "artifactName": "BitDustDesktop.${ext}",
     "mac": {
-      "icon": "build_resources/bitdust.icns",
+      "icon": "build_resources/bitdust.png",
       "category": "public.app-category.social-networking",
       "target": "dmg"
     },

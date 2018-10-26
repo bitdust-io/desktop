@@ -6,10 +6,6 @@ const log = require('electron-log')
 const shellPath = require('shell-path');
 
 
-var options = { env : process.env };
-options.env.PATH = shellPath.sync();
-
-
 const getEnvironmentScript = (platform) => {
     switch(platform) {
         case 'linux':
@@ -27,6 +23,8 @@ const runBitDust = () => {
     log.debug('Target platform: ' + process.platform)
     const deployScript = getEnvironmentScript(process.platform)
     log.debug('Running: ' + deployScript);
+    const options = { env : process.env };
+    options.env.PATH = shellPath.sync();
     return new Promise((resolve, reject) => {
 		const childProcess = exec(deployScript, options);
 
@@ -49,6 +47,8 @@ const runBitDust = () => {
 
 const stopBitDust = () => {
     log.debug('Stopping bitdust');
+    const options = { env : process.env };
+    options.env.PATH = shellPath.sync();
 	if (process.platform === 'win32') {
 		exec('taskkill  /IM BitDustNode.exe /F /T', options)
 	} else {

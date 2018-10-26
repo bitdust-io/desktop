@@ -12,18 +12,8 @@ const setup = require('./setup')
 const ui = require('./ui')
 
 
-let win;
-let isStarting = true;
-let showExitPrompt = true;
-
-
-
-//function sleep() {
-//    return new Promise((resolve, reject) => {
-//        setTimeout(resolve, 200000)
-//    })
-//}
-//await sleep()
+let win
+let showExitPrompt = true
 
 
 function showWindow() {
@@ -39,11 +29,9 @@ function showWindow() {
     } 
 }
 
-function showDialogOnExit(e, app) {
-
+function showDialogOnExit(e) {
     if (showExitPrompt) {
         e.preventDefault();
-
         dialog.showMessageBox({
             type: 'question',
             buttons: ['Keep running in the background', 'Stop BitDust', 'Cancel'],
@@ -53,28 +41,15 @@ function showDialogOnExit(e, app) {
             message: 'Do you want to run BitDust in the background or stop it completely?'
         }, (response) => {
             if (response === 0) {
-				if (win && win.isVisible()) {
-					win.hide()
-				}
-			} else if (response === 1) {
-				setup.stopBitDust()
+                if (win && win.isVisible()) {
+                    win.hide()
+                }
+            } else if (response === 1) {
                 showExitPrompt = false
                 app.quit()
-			}
+            }
         })
     }
-}
-
-
-function runHealthCheck() {
-    setTimeout(() => {
-        request('http://localhost:8180/process/health/v1', async (err, res, body) => {
-            if (err) {
-                await setup.runBitDust()
-            }
-            runHealthCheck()
-        });
-    }, 10000)
 }
 
 async function init() {
@@ -82,23 +57,13 @@ async function init() {
         const splashScreen = ui.createSplashScreen()
         await setup.runBitDust()
         log.warn('installBitDust DONE')
+        splashScreen.hide()
+        showWindow()
         splashScreen.close()
-		log.warn('init DONE : createWindow')
-        win = ui.createMainWindow()
-		win.on('closed', () => {
-			win = null
-		})
-        isStarting = false
-        runHealthCheck()
     } catch (error) {
-        isStarting = false
         log.error(error)
     }
 }
-
-
-
-ipc.on('restart', setup.runBitDust)
 
 app.on('ready', () => {
 	if (process.platform === 'win32') {
@@ -110,15 +75,34 @@ app.on('ready', () => {
     init()
 });
 
-// Quit when all windows are closed.
-app.on('window-all-closed', () => {
-    if (isStarting === false) {
-		log.warn('window-all-closed : app.quit')
-		app.hide()
+ipc.on('restart', setup.runBitDust)
+app.on('activate', showWindow)
+app.on('before-quit', showDialogOnExit)
+app.on('will-quit', setup.stopBitDust)
+
+app.on('window-all-closed', function () {
+    // On OS X it is common for applications and their menu bar
+    // to stay active until the user quits explicitly with Cmd + Q
+    if (process.platform !== 'darwin') {
+        app.quit()
     }
-});
+})
 
-// Mac OS only
-app.on('activate', () => showWindow);
 
-app.on('before-quit', (e) => showDialogOnExit(e, app));
+// function runHealthCheck() {
+//     setTimeout(() => {
+//         request('http://localhost:8180/process/health/v1', async (err, res, body) => {
+//             if (err) {
+//                 await setup.runBitDust()
+//             }
+//             runHealthCheck()
+//         });
+//     }, 10000)
+// }
+
+//function sleep() {
+//    return new Promise((resolve, reject) => {
+//        setTimeout(resolve, 200000)
+//    })
+//}
+//await sleep()
