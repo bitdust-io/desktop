@@ -52,11 +52,7 @@ function createMainWindow() {
         win.loadURL('http://localhost:8080/')
     } else {
 		log.warn('Opening main UI page: ' + path.join(uiDir, 'dist/index.html'))
-        win.loadURL(url.format({
-            pathname: path.join(uiDir, 'dist/index.html'),
-            protocol: 'file:',
-            slashes: true
-        }))
+        win.loadFile(path.join(uiDir, 'dist/index.html'))
     }
 	return win
 }
