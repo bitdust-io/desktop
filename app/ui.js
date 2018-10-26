@@ -51,7 +51,7 @@ function createMainWindow() {
     if (process.env.ELECTRON_ENV === 'debug') {
         win.loadURL('http://localhost:8080/')
     } else {
-        log.warn('Opening main UI page: ' + path.join(uiDir, 'dist/index.html'))
+		log.warn('Opening main UI page: ' + path.join(uiDir, 'dist/index.html'))
         win.loadFile(path.join(uiDir, 'dist/index.html'))
     }
     return win
