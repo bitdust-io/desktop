@@ -1,0 +1,88 @@
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-image: linear-gradient(-120deg, rgba(150, 76, 174, 0.91) 0%, rgba(0, 143, 186, 0.93) 100%);
+    color: #ffffff;
+    font-size: .8rem;
+    font-family: Segoe UI, Roboto, Oxygen-Sans, Ubuntu, Cantarell, Helvetica Neue, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    font-weight: 400;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+}
+
+.app {
+    width: 50%;
+    margin: auto;
+    text-align: center;
+}
+
+.logo-wrapper {
+    margin: 60px auto 40px;
+    display: inline-block;
+}
+
+.logo {
+    width: 190px;
+    height: 190px;
+    background: #008FBA;
+    border: 8px solid #ffffff;
+    border-radius: 100%;
+    text-align: center;
+    position: relative;
+}
+
+.logo img {
+    margin: 30px 0 0 10px;
+}
+
+.logo span {
+    position: absolute;
+    top: 94px;
+    left: -8px;
+    width: 206px;
+    display: block;
+    animation: rotating 2s linear infinite;
+}
+
+.logo span::before {
+    content: '';
+    position: absolute;
+    top: -15px;
+    left: -10px;
+    width: 30px;
+    height: 30px;
+    background: #ffffff;
+    display: block;
+    border-radius: 100%;
+
+}
+
+@keyframes rotating {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@font-face {
+    font-family: "Segoe UI";
+    src: url("./segoeui.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
+
+#output {
+    height: 200px;
+    overflow: scroll;
+    color: rgb(42, 177, 37);
+    background: black;
+    font-family: monospace;
+    visibility: hidden;
+}
