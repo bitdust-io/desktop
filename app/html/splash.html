@@ -4,28 +4,22 @@
 <head>
     <meta charset=utf-8>
     <meta name=viewport content="width=device-width,initial-scale=1">
-    <title>BitDust Web</title>
+    <title>BitDust</title>
     <meta name=description content="bit-dust web">
-    <style>
-        body,
-        html {
-            background: #fff
-        }
-        #output {
-            height: 200px;
-            overflow: scroll;
-            color: rgb(42,177,37);
-            background: black;
-            font-family: monospace;
-            visibility: hidden;
-        }
-    </style>
+    <link href="./styles.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>
-    <h1>Starting BitDust...</h1>
-    <div id="output"></div>
-    <label><input type="checkbox" id="toggleDebug">display debug information</label>
+<div class="app">
+    <div class="logo-wrapper">
+        <div class="logo">
+            <img src="icon-logo.svg"/>
+            <span/>
+        </div>
+    </div>
+    <h1>Initialising BitDust<br/>
+        This could take a few minutes</h1>
+</div>
 </body>
 
 <script>
@@ -36,7 +30,7 @@
         output.innerHTML += arg.replace(/\n/g, '<br/>')
         output.scrollTop = output.scrollHeight;
     });
-    toggleButton.addEventListener('click', function(e) {
+    toggleButton.addEventListener('click', function (e) {
         if (this.checked) {
             output.style.visibility = 'visible';
         } else {
