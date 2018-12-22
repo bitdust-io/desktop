@@ -49,11 +49,12 @@ const stopBitDust = () => {
     log.debug('Stopping bitdust');
     const options = { env : process.env };
     options.env.PATH = shellPath.sync();
-	if (process.platform === 'win32') {
-		exec('taskkill  /IM BitDustNode.exe /F /T', options)
-	} else {
-		exec('bitdust stop', options);
-	}
+    exec(deployScript + ' stop', options);
+	//if (process.platform === 'win32') {
+	//	exec('taskkill  /IM BitDustNode.exe /F /T', options)
+	//} else {
+	//	exec('bitdust stop', options);
+	//}
 }
 
 module.exports = {
