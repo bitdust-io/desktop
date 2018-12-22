@@ -65,6 +65,16 @@ async function init() {
     }
 }
 
+async function shutdown() {
+    try {
+        await setup.stopBitDust()
+        log.warn('stop BitDust DONE')
+    } catch (error) {
+        log.error(error)
+    }
+}
+
+
 app.on('ready', () => {
 	if (process.platform === 'win32') {
 		const iconPath = path.join(__dirname, '..', 'build_resources', 'bitdust2.ico')
@@ -78,7 +88,7 @@ app.on('ready', () => {
 ipc.on('restart', setup.runBitDust)
 app.on('activate', showWindow)
 app.on('before-quit', showDialogOnExit)
-app.on('will-quit', setup.stopBitDust)
+app.on('will-quit', shutdown)
 
 app.on('window-all-closed', function () {
     // On OS X it is common for applications and their menu bar

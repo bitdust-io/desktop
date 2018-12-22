@@ -11,10 +11,12 @@ BITDUST_COMMAND_FILE="${ROOT_DIR}/bitdust"
 GLOBAL_COMMAND_FILE="/usr/local/bin/bitdust"
 
 
-if [ $1 = "stop" ]; then
+if [[ "$1" == "stop" ]]; then
+    echo ''
+    echo '##### Stopping BitDust...'
     $PYTHON_BIN $BITDUST_PY stop
     exit 0;
-else
+fi
 
 
 which -s brew
@@ -116,7 +118,7 @@ if [[ ! -e $VENV_DIR ]]; then
     PATH="$HOME/Library/Python/2.7/bin:$PATH" python $BITDUST_PY install
     ln -s -f $BITDUST_COMMAND_FILE $GLOBAL_COMMAND_FILE
     echo ''
-    echo '##### System-wide shell command for BitDust created in ${GLOBAL_COMMAND_FILE}'
+    echo '##### System-wide shell command for BitDust created'
 else
     echo ''
     echo '##### BitDust virtual environment already exist, updating...'
@@ -132,3 +134,4 @@ $PYTHON_BIN $BITDUST_PY daemon
 echo ''
 echo '##### DONE!!!'
 
+exit 0

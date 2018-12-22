@@ -12,7 +12,7 @@ BITDUST_COMMAND_FILE="${ROOT_DIR}/bitdust"
 GLOBAL_COMMAND_FILE="/usr/local/bin/bitdust"
 
 
-if [ $1 = "stop" ]; then
+if [ $1 == "stop" ]; then
     $PYTHON_BIN $BITDUST_PY stop
     exit 0;
 else
