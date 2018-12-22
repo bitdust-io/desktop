@@ -11,6 +11,12 @@ BITDUST_COMMAND_FILE="${ROOT_DIR}/bitdust"
 GLOBAL_COMMAND_FILE="/usr/local/bin/bitdust"
 
 
+if [ $1 = "stop" ]; then
+    $PYTHON_BIN $BITDUST_PY stop
+    exit 0;
+else
+
+
 which -s brew
 if [[ $? != 0 ]]; then
     echo ''
@@ -84,8 +90,7 @@ if [[ ! -e $SOURCE_DIR ]]; then
     echo ''
     echo '##### Сloning the source code of BitDust project...'
     mkdir -p $SOURCE_DIR
-    git clone --depth=1 https://github.com/bitdust-io/devel.git $SOURCE_DIR
-    # git clone --depth=1 https://github.com/bitdust-io/public.git $SOURCE_DIR
+    git clone --depth=1 https://github.com/bitdust-io/public.git $SOURCE_DIR
 else
     echo ''
     echo '##### BitDust source code already cloned locally'
