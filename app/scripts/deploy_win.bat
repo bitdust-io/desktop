@@ -32,6 +32,24 @@ setlocal disabledelayedexpansion
 echo *** Short and safe path is %BITDUST_HOME%
 
 
+set BITDUST_NODE=%BITDUST_HOME%\venv\Scripts\BitDustNode.exe
+echo *** Executable file is %BITDUST_HOME%
+
+
+if /I "%~1"=="stop" goto StopBitDist
+goto StartBitDust
+
+:StopBitDist
+echo *** Stopping BitDust ...
+cd /D "%BITDUST_HOME%"
+echo "%BITDUST_NODE%" "%BITDUST_HOME%\src\bitdust.py stop"
+%BITDUST_NODE% %BITDUST_HOME%\src\bitdust.py stop
+exit /b %errorlevel%
+
+:StartBitDust
+echo *** Prepare BitDust local files
+
+
 set TMPDIR=%TEMP%\BitDust_Install_TEMP
 if not exist %TMPDIR% mkdir %TMPDIR%
 echo *** Prepared temp folder in %TMPDIR%
@@ -250,7 +268,7 @@ cd /D %BITDUST_HOME%\src
 
 if exist %BITDUST_HOME%\src\bitdust.py goto SourcesExist
 echo *** Downloading BitDust software using "git clone" from GitHub devel repository
-%BITDUST_HOME%\git\bin\git.exe clone -q --depth 1 https://github.com/bitdust-io/devel.git .
+%BITDUST_HOME%\git\bin\git.exe clone -q --depth 1 https://github.com/bitdust-io/public.git .
 if %errorlevel% neq 0 goto DEPLOY_ERROR
 :SourcesExist
 
@@ -278,7 +296,6 @@ echo *** Update BitDust requirements
 :VenvOk
 
 
-set BITDUST_NODE=%BITDUST_HOME%\venv\Scripts\BitDustNode.exe
 echo *** Make sure Python "alias" created in %BITDUST_NODE%
 if exist %BITDUST_NODE% goto BitDustNodeExeExist
 copy /B /Y %BITDUST_HOME%\venv\Scripts\python.exe %BITDUST_NODE%

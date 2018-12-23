@@ -20,11 +20,11 @@ const getEnvironmentScript = (platform) => {
 }
 
 const runBitDust = () => {
-    log.debug('Target platform: ' + process.platform)
-    const deployScript = getEnvironmentScript(process.platform)
-    log.debug('Running: ' + deployScript);
+    log.warn('Target platform: ' + process.platform)
+    const deployScript = getEnvironmentScript(process.platform);
     const options = { env : process.env };
     options.env.PATH = shellPath.sync();
+    log.warn('Running: ' + deployScript);
     return new Promise((resolve, reject) => {
 		const childProcess = exec(deployScript, options);
 
@@ -46,14 +46,13 @@ const runBitDust = () => {
 }
 
 const stopBitDust = () => {
-    log.debug('Stopping bitdust');
+    log.warn('Target platform: ' + process.platform)
+    const deployScript = getEnvironmentScript(process.platform);
     const options = { env : process.env };
     options.env.PATH = shellPath.sync();
-	if (process.platform === 'win32') {
-		exec('taskkill  /IM BitDustNode.exe /F /T', options)
-	} else {
-		exec('bitdust stop', options);
-	}
+    const deployScriptStop = deployScript + ' stop';
+    log.warn('Running: ' + deployScriptStop);
+    exec(deployScriptStop, options);
 }
 
 module.exports = {

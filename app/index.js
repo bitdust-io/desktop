@@ -15,7 +15,6 @@ const ui = require('./ui')
 let win
 let showExitPrompt = true
 
-
 function showWindow() {
     if (win) {
         if (!win.isVisible()) {
@@ -65,6 +64,16 @@ async function init() {
     }
 }
 
+async function shutdown() {
+    try {
+        await setup.stopBitDust()
+        log.warn('stop BitDust DONE')
+    } catch (error) {
+        log.error(error)
+    }
+}
+
+
 app.on('ready', () => {
 	if (process.platform === 'win32') {
 		const iconPath = path.join(__dirname, '..', 'build_resources', 'bitdust2.ico')
@@ -78,7 +87,7 @@ app.on('ready', () => {
 ipc.on('restart', setup.runBitDust)
 app.on('activate', showWindow)
 app.on('before-quit', showDialogOnExit)
-app.on('will-quit', setup.stopBitDust)
+app.on('will-quit', shutdown)
 
 app.on('window-all-closed', function () {
     // On OS X it is common for applications and their menu bar
@@ -87,22 +96,3 @@ app.on('window-all-closed', function () {
         app.quit()
     }
 })
-
-
-// function runHealthCheck() {
-//     setTimeout(() => {
-//         request('http://localhost:8180/process/health/v1', async (err, res, body) => {
-//             if (err) {
-//                 await setup.runBitDust()
-//             }
-//             runHealthCheck()
-//         });
-//     }, 10000)
-// }
-
-//function sleep() {
-//    return new Promise((resolve, reject) => {
-//        setTimeout(resolve, 200000)
-//    })
-//}
-//await sleep()
