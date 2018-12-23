@@ -15,7 +15,6 @@ const ui = require('./ui')
 let win
 let showExitPrompt = true
 
-
 function showWindow() {
     if (win) {
         if (!win.isVisible()) {
@@ -97,22 +96,3 @@ app.on('window-all-closed', function () {
         app.quit()
     }
 })
-
-
-// function runHealthCheck() {
-//     setTimeout(() => {
-//         request('http://localhost:8180/process/health/v1', async (err, res, body) => {
-//             if (err) {
-//                 await setup.runBitDust()
-//             }
-//             runHealthCheck()
-//         });
-//     }, 10000)
-// }
-
-//function sleep() {
-//    return new Promise((resolve, reject) => {
-//        setTimeout(resolve, 200000)
-//    })
-//}
-//await sleep()

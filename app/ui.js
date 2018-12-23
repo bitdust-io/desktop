@@ -7,6 +7,7 @@ const ipc = require('electron').ipcMain
 const {BrowserWindow} = require('electron')
 const log = require('electron-log')
 
+
 const uiDir = `${os.homedir()}/.bitdust/ui`
 
 function createSplashScreen() {
