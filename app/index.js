@@ -76,7 +76,7 @@ async function shutdown() {
 
 app.on('ready', () => {
 	if (process.platform === 'win32') {
-		const iconPath = path.join(__dirname, '..', 'build_resources', 'bitdust2.ico')
+		const iconPath = path.join(__dirname, '..', 'build_resources', 'bitdust.ico')
 		tray = new Tray(iconPath)
 		tray.setToolTip('BitDust')
 		tray.on('click', showWindow)
