@@ -6,6 +6,7 @@ GIT_PATH="/Applications/BitDust.app/Contents/Resources/app/app/scripts/git"
 SOURCE_UI_DIR="${ROOT_DIR}/ui"
 VENV_DIR="${ROOT_DIR}/venv"
 PYTHON_BIN="${ROOT_DIR}/venv/bin/python"
+SYS_PYTHON_BIN=`which python`
 PIP_BIN="${ROOT_DIR}/venv/bin/pip"
 BITDUST_PY="${SOURCE_DIR}/bitdust.py"
 BITDUST_COMMAND_FILE="${ROOT_DIR}/bitdust"
@@ -27,19 +28,17 @@ else
     GIT="$(dirname $(pwd)/$0)/git"
 fi
 
-
+gitok=`which git`
 pipok=`which pip`
 pipuserok=`PATH="$HOME/Library/Python/2.7/bin:$PATH" which pip`
 venvok=`which virtualenv`
 venvuserok=`PATH="$HOME/Library/Python/2.7/bin:$PATH" which virtualenv`
 
-
-
 if [[ ! $pipok ]]; then
     if [[ ! $pipuserok ]]; then
         echo ''
         echo '##### Installing PIP for current user'
-        python -m ensurepip -U -v --user
+        $SYS_PYTHON_BIN -m ensurepip -U -v --user
     else
         echo ''
         echo '##### PIP already installed for current user'
@@ -54,7 +53,7 @@ if [[ ! $venvok ]]; then
     if [[ ! $venvuserok ]]; then
         echo ''
         echo '##### Installing Virtualenv for current user'
-        python -m pip install --upgrade virtualenv --user
+        $SYS_PYTHON_BIN -m pip install --upgrade virtualenv --user
     else
         echo ''
         echo '##### Virtualenv already installed for current user'
@@ -69,12 +68,7 @@ if [[ ! -e $SOURCE_DIR ]]; then
     echo ''
     echo '##### Сloning the source code of BitDust project...'
     mkdir -p $SOURCE_DIR
-<<<<<<< HEAD
-    git clone --depth=1 https://github.com/bitdust-io/public.git $SOURCE_DIR
-=======
-    $GIT clone --depth=1 https://github.com/bitdust-io/devel.git $SOURCE_DIR
-    # git clone --depth=1 https://github.com/bitdust-io/public.git $SOURCE_DIR
->>>>>>> Add git binary
+    $GIT clone --depth=1 https://github.com/bitdust-io/public.git $SOURCE_DIR
 else
     echo ''
     echo '##### BitDust source code already cloned locally'
