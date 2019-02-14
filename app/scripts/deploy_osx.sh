@@ -2,6 +2,7 @@
 
 ROOT_DIR="$HOME/.bitdust"
 SOURCE_DIR="${ROOT_DIR}/src"
+GIT_PATH="/Applications/BitDust.app/Contents/Resources/app/app/scripts/git"
 SOURCE_UI_DIR="${ROOT_DIR}/ui"
 VENV_DIR="${ROOT_DIR}/venv"
 PYTHON_BIN="${ROOT_DIR}/venv/bin/python"
@@ -9,6 +10,7 @@ PIP_BIN="${ROOT_DIR}/venv/bin/pip"
 BITDUST_PY="${SOURCE_DIR}/bitdust.py"
 BITDUST_COMMAND_FILE="${ROOT_DIR}/bitdust"
 GLOBAL_COMMAND_FILE="/usr/local/bin/bitdust"
+GIT=""
 
 
 if [[ "$1" == "stop" ]]; then
@@ -19,43 +21,18 @@ if [[ "$1" == "stop" ]]; then
 fi
 
 
-which -s brew
-if [[ $? != 0 ]]; then
-    echo ''
-    echo '##### Installing Homebrew...'
-    echo | ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+if [ -f $GIT_PATH ]; then
+    GIT="$GIT_PATH"
 else
-    echo ''
-    echo '##### Homebrew already installed'
+    GIT="$(dirname $(pwd)/$0)/git"
 fi
 
 
-gitok=`which git`
-pythonok=`brew list | grep python`
 pipok=`which pip`
 pipuserok=`PATH="$HOME/Library/Python/2.7/bin:$PATH" which pip`
 venvok=`which virtualenv`
 venvuserok=`PATH="$HOME/Library/Python/2.7/bin:$PATH" which virtualenv`
 
-
-if [[ ! $gitok ]]; then
-    echo ''
-    echo '##### Installing GIT...'
-    brew install git
-else
-    echo ''
-    echo '##### GIT already installed'
-fi
-
-
-if [[ ! $pythonok ]]; then
-    echo ''
-    echo '##### Installing Formula Python...'
-    brew install python
-else
-    echo ''
-    echo '##### Python already installed'
-fi
 
 
 if [[ ! $pipok ]]; then
@@ -92,7 +69,12 @@ if [[ ! -e $SOURCE_DIR ]]; then
     echo ''
     echo '##### Сloning the source code of BitDust project...'
     mkdir -p $SOURCE_DIR
+<<<<<<< HEAD
     git clone --depth=1 https://github.com/bitdust-io/public.git $SOURCE_DIR
+=======
+    $GIT clone --depth=1 https://github.com/bitdust-io/devel.git $SOURCE_DIR
+    # git clone --depth=1 https://github.com/bitdust-io/public.git $SOURCE_DIR
+>>>>>>> Add git binary
 else
     echo ''
     echo '##### BitDust source code already cloned locally'
@@ -103,11 +85,11 @@ if [[ ! -e $SOURCE_UI_DIR ]]; then
     echo ''
     echo '##### Сloning the source code of BitDust UI...'
     mkdir -p $SOURCE_UI_DIR
-    git clone --depth=1 https://github.com/bitdust-io/web.git $SOURCE_UI_DIR
+    $GIT clone --depth=1 https://github.com/bitdust-io/web.git $SOURCE_UI_DIR
 else
     cd $SOURCE_UI_DIR
-    git fetch
-    git reset --hard origin/master
+    $GIT fetch
+    $GIT reset --hard origin/master
     echo '##### Updating the source code of BitDust UI...'
 fi
 
@@ -126,7 +108,7 @@ else
 fi
 
 
-echo ''
+
 echo '##### Starting BitDust as a daemon process'
 $PYTHON_BIN $BITDUST_PY daemon
 
