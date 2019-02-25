@@ -1,5 +1,17 @@
 @echo off
 
+rem Get the datetime in a format that can go in a filename.
+set _my_datetime=%date%_%time%
+set _my_datetime=%_my_datetime: =_%
+set _my_datetime=%_my_datetime::=%
+set _my_datetime=%_my_datetime:/=_%
+set _my_datetime=%_my_datetime:.=_%
+
+
+echo *** Running at %_my_datetime%
+set BITDUST_GIT_REPO=https://github.com/bitdust-io/public.git
+
+
 echo *** Verifying BitDust installation files
 set CURRENT_PATH=%cd%
 set BITDUST_FULL_HOME=%HOMEDRIVE%%HOMEPATH%\.bitdust
@@ -8,15 +20,18 @@ set GIT_ZIP=%CURRENT_PATH%\resources\app\build_resources\win\git.zip
 set UNZIP_EXE=%CURRENT_PATH%\resources\app\build_resources\win\unzip.exe
 
 
-echo *** Destination folder is %BITDUST_FULL_HOME%
+echo *** My Home folder expected to be %BITDUST_FULL_HOME%
 if not exist "%BITDUST_FULL_HOME%" echo Prepare destination folder %BITDUST_FULL_HOME%
 if not exist "%BITDUST_FULL_HOME%" mkdir "%BITDUST_FULL_HOME%"
+
+
+rem TODO : check appdata file also
 
 
 set SHORT_PATH_SCRIPT=%BITDUST_FULL_HOME%\shortpath.bat
 set SHORT_PATH_OUT=%BITDUST_FULL_HOME%\shortpath.txt
 if exist "%SHORT_PATH_OUT%" goto ShortPathKnown
-echo *** Prepare short path to the data folder
+echo *** Prepare short path to my Home folder
 echo @echo OFF > "%SHORT_PATH_SCRIPT%"
 echo echo %%~s1 >> "%SHORT_PATH_SCRIPT%"
 call "%SHORT_PATH_SCRIPT%" "%BITDUST_FULL_HOME%" > "%SHORT_PATH_OUT%"
@@ -30,7 +45,10 @@ echo *** Short and safe path to BitDust home folder is %BITDUST_HOME%
 
 
 set BITDUST_NODE=%BITDUST_HOME%\venv\Scripts\BitDustNode.exe
-echo *** Executable file is %BITDUST_HOME%
+set BITDUST_NODE_CONSOLE=%BITDUST_HOME%\venv\Scripts\BitDustConsole.exe
+
+
+echo *** BitDust Home location is "%BITDUST_HOME%"
 set PYTHON_EXE=%BITDUST_HOME%\python\python.exe
 echo *** python.exe is %PYTHON_EXE%
 set GIT_EXE=%BITDUST_HOME%\git\bin\git.exe
@@ -42,11 +60,12 @@ goto StartBitDust
 :StopBitDust
 echo *** Stopping BitDust ...
 cd /D "%BITDUST_HOME%"
-if not exist %BITDUST_NODE% goto KillBitDust
-echo "%BITDUST_NODE%" "%BITDUST_HOME%\src\bitdust.py stop"
-%BITDUST_NODE% %BITDUST_HOME%\src\bitdust.py stop
+if not exist %BITDUST_NODE_CONSOLE% goto KillBitDust
+echo *** Executing : "%BITDUST_NODE_CONSOLE%" "%BITDUST_HOME%\src\bitdust.py stop"
+%BITDUST_NODE_CONSOLE% %BITDUST_HOME%\src\bitdust.py stop
 :KillBitDust
 taskkill /IM BitDustNode.exe /F /T
+taskkill /IM BitDustConsole.exe /F /T
 :BitDustStopped
 echo *** BitDust process stopped, DONE!
 exit /b %errorlevel%
@@ -82,7 +101,7 @@ cd /D %BITDUST_HOME%\src
 
 if exist %BITDUST_HOME%\src\bitdust.py goto SourcesExist
 echo *** Downloading BitDust software using "git clone" from GitHub repository
-%BITDUST_HOME%\git\bin\git.exe clone -q --depth 1 https://github.com/bitdust-io/devel.git .
+%BITDUST_HOME%\git\bin\git.exe clone -q --depth 1 %BITDUST_GIT_REPO% .
 if %errorlevel% neq 0 goto DEPLOY_ERROR
 :SourcesExist
 
@@ -119,6 +138,13 @@ if exist %BITDUST_NODE% goto BitDustNodeExeExist
 copy /B /Y %BITDUST_HOME%\venv\Scripts\pythonw.exe %BITDUST_NODE%
 echo *** Copied %BITDUST_HOME%\venv\Scripts\pythonw.exe to %BITDUST_NODE% 
 :BitDustNodeExeExist
+
+
+echo *** Check BitDustConsole.exe "alias" created in %BITDUST_NODE_CONSOLE%
+if exist %BITDUST_NODE_CONSOLE% goto BitDustConsoleExeExist
+copy /B /Y %BITDUST_HOME%\venv\Scripts\python.exe %BITDUST_NODE_CONSOLE%
+echo *** Copied %BITDUST_HOME%\venv\Scripts\python.exe to %BITDUST_NODE_CONSOLE% 
+:BitDustConsoleExeExist
 
 
 echo *** Checking BitDust UI sources

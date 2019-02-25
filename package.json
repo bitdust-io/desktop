@@ -27,7 +27,13 @@
     "mac": {
       "icon": "build_resources/bitdust.png",
       "category": "public.app-category.social-networking",
-      "target": "dmg"
+      "target": "dmg",
+      "files": [
+        "**/*",
+        "!build_resources/win/",
+        "app/scripts/deploy_win.bat",
+        "app/scripts/deploy_linux.sh"
+      ]
     },
     "win": {
       "icon": "build_resources/bitdust.ico",
@@ -35,6 +41,11 @@
         {
           "target": "nsis"
         }
+      ],
+      "files": [
+        "**/*",
+        "app/scripts/deploy_osx.sh",
+        "app/scripts/deploy_linux.sh"
       ]
     },
     "linux": {
