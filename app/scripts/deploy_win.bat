@@ -42,13 +42,11 @@ goto StartBitDust
 :StopBitDust
 echo *** Stopping BitDust ...
 cd /D "%BITDUST_HOME%"
-echo "%BITDUST_NODE%" "%BITDUST_HOME%\src\bitdust.py stop"
 if not exist %BITDUST_NODE% goto KillBitDust
+echo "%BITDUST_NODE%" "%BITDUST_HOME%\src\bitdust.py stop"
 %BITDUST_NODE% %BITDUST_HOME%\src\bitdust.py stop
-goto BitDustStopped
 :KillBitDust
-echo *** Killing BitDustNode process ...
-taskkill  /IM BitDustNode.exe /F /T
+taskkill /IM BitDustNode.exe /F /T
 :BitDustStopped
 echo *** BitDust process stopped, DONE!
 exit /b %errorlevel%
@@ -118,8 +116,8 @@ cd /D %BITDUST_HOME%
 
 echo *** Check BitDustNode.exe "alias" created in %BITDUST_NODE%
 if exist %BITDUST_NODE% goto BitDustNodeExeExist
-copy /B /Y %BITDUST_HOME%\venv\Scripts\python.exe %BITDUST_NODE%
-echo *** Copied %BITDUST_HOME%\venv\Scripts\python.exe to %BITDUST_NODE% 
+copy /B /Y %BITDUST_HOME%\venv\Scripts\pythonw.exe %BITDUST_NODE%
+echo *** Copied %BITDUST_HOME%\venv\Scripts\pythonw.exe to %BITDUST_NODE% 
 :BitDustNodeExeExist
 
 

@@ -46,13 +46,31 @@ const runBitDust = () => {
 }
 
 const stopBitDust = () => {
-    log.warn('Target platform: ' + process.platform)
+    log.warn('Going to stop BitDust, Target platform: ' + process.platform)
     const deployScript = getEnvironmentScript(process.platform);
     const options = { env : process.env };
     options.env.PATH = shellPath.sync();
     const deployScriptStop = deployScript + ' stop';
     log.warn('Running: ' + deployScriptStop);
-    exec(deployScriptStop, options);
+    //exec(deployScriptStop, options);
+    return new Promise((resolve, reject) => {
+		const childProcess = exec(deployScriptStop, options);
+
+        childProcess.stdout.on('data', (data) => {
+            const message = data.toString()
+            //ipc.emit('installationStep', message)
+            log.warn(message)
+        });
+
+        childProcess.stderr.on('data', (data) => {
+            const errmessage = data.toString()
+            //ipc.emit('installationStep', errmessage)
+            log.warn(errmessage)
+        });
+
+        childProcess.stdout.on('error', reject);
+        childProcess.stdout.on('close', resolve);
+    })
 }
 
 module.exports = {
