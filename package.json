@@ -31,8 +31,8 @@
       "files": [
         "**/*",
         "!build_resources/win/",
-        "app/scripts/deploy_win.bat",
-        "app/scripts/deploy_linux.sh"
+        "!app/scripts/deploy_win.bat",
+        "!app/scripts/deploy_linux.sh"
       ]
     },
     "win": {
@@ -44,8 +44,9 @@
       ],
       "files": [
         "**/*",
-        "app/scripts/deploy_osx.sh",
-        "app/scripts/deploy_linux.sh"
+        "!build_resources/macos/",
+        "!app/scripts/deploy_osx.sh",
+        "!app/scripts/deploy_linux.sh"
       ]
     },
     "linux": {
@@ -62,6 +63,13 @@
         "gcc",
         "python-dev",
         "python-virtualenv"
+      ],
+      "files": [
+        "**/*",
+        "!build_resources/win/",
+        "!build_resources/macos/",
+        "!app/scripts/deploy_win.bat",
+        "!app/scripts/deploy_osx.sh"
       ]
     },
     "asar": false
