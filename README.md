@@ -22,3 +22,8 @@ A repo for generic BitDust launcher on different desktop platforms
 
     npm run dist-deb
 
+
+## Start in "developer mode"
+
+    npm start dev
+

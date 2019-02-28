@@ -1,16 +1,16 @@
 #!/bin/bash
 
+
 ROOT_DIR="$HOME/.bitdust"
 SOURCE_DIR="${ROOT_DIR}/src"
-GIT_PATH="/Applications/BitDust.app/Contents/Resources/app/app/scripts/git"
 SOURCE_UI_DIR="${ROOT_DIR}/ui"
 VENV_DIR="${ROOT_DIR}/venv"
 PYTHON_BIN="${ROOT_DIR}/venv/bin/python"
+GIT_BIN="${ROOT_DIR}/git/bin/git"
 PIP_BIN="${ROOT_DIR}/venv/bin/pip"
 BITDUST_PY="${SOURCE_DIR}/bitdust.py"
 BITDUST_COMMAND_FILE="${ROOT_DIR}/bitdust"
 GLOBAL_COMMAND_FILE="/usr/local/bin/bitdust"
-GIT=""
 
 
 if [[ "$1" == "stop" ]]; then
@@ -21,10 +21,19 @@ if [[ "$1" == "stop" ]]; then
 fi
 
 
-if [ -f $GIT_PATH ]; then
-    GIT="$GIT_PATH"
-else
-    GIT="$(dirname $(pwd)/$0)/git"
+if [[ ! -e $ROOT_DIR ]]; then
+    echo ''
+    echo "##### Create BitDust Home folder at $ROOT_DIR"
+    mkdir -p $ROOT_DIR
+fi
+
+
+if [[ ! -f $GIT_BIN ]]; then
+    echo ''
+    echo "##### Copy GIT binariy from distribution to ${GIT_BIN}"
+    mkdir -p "${ROOT_DIR}/git/bin/"
+    CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+    cp "${CURRENT_DIR}/../../build_resources/macos/git" "$ROOT_DIR/git/bin/"
 fi
 
 
@@ -32,7 +41,6 @@ pipok=`which pip`
 pipuserok=`PATH="$HOME/Library/Python/2.7/bin:$PATH" which pip`
 venvok=`which virtualenv`
 venvuserok=`PATH="$HOME/Library/Python/2.7/bin:$PATH" which virtualenv`
-
 
 
 if [[ ! $pipok ]]; then
@@ -65,19 +73,21 @@ else
 fi
 
 
+cd $ROOT_DIR
+
+
 if [[ ! -e $SOURCE_DIR ]]; then
     echo ''
-    echo '##### Сloning the source code of BitDust project...'
+    echo "##### Сloning the source code of BitDust project to $SOURCE_DIR"
     mkdir -p $SOURCE_DIR
-<<<<<<< HEAD
-    git clone --depth=1 https://github.com/bitdust-io/public.git $SOURCE_DIR
-=======
-    $GIT clone --depth=1 https://github.com/bitdust-io/devel.git $SOURCE_DIR
-    # git clone --depth=1 https://github.com/bitdust-io/public.git $SOURCE_DIR
->>>>>>> Add git binary
+    $GIT_BIN clone --depth=1 "git://github.com/bitdust-io/public.git" "$SOURCE_DIR"
 else
     echo ''
-    echo '##### BitDust source code already cloned locally'
+    echo '##### BitDust source code already cloned locally, updating...'
+    cd $SOURCE_DIR
+    $GIT_BIN fetch --all
+    $GIT_BIN reset --hard origin/master
+    cd ..
 fi
 
 
@@ -85,12 +95,14 @@ if [[ ! -e $SOURCE_UI_DIR ]]; then
     echo ''
     echo '##### Сloning the source code of BitDust UI...'
     mkdir -p $SOURCE_UI_DIR
-    $GIT clone --depth=1 https://github.com/bitdust-io/web.git $SOURCE_UI_DIR
+    $GIT_BIN clone --depth=1 "git://github.com/bitdust-io/web.git" $SOURCE_UI_DIR
 else
-    cd $SOURCE_UI_DIR
-    $GIT fetch
-    $GIT reset --hard origin/master
+    echo ''
     echo '##### Updating the source code of BitDust UI...'
+    cd $SOURCE_UI_DIR
+    $GIT_BIN fetch --all
+    $GIT_BIN reset --hard origin/master
+    cd ..
 fi
 
 
@@ -108,7 +120,7 @@ else
 fi
 
 
-
+echo ''
 echo '##### Starting BitDust as a daemon process'
 $PYTHON_BIN $BITDUST_PY daemon
 

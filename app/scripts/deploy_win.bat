@@ -1,313 +1,156 @@
 @echo off
 
+rem Get the datetime in a format that can go in a filename.
+set _my_datetime=%date%_%time%
+set _my_datetime=%_my_datetime: =_%
+set _my_datetime=%_my_datetime::=%
+set _my_datetime=%_my_datetime:/=_%
+set _my_datetime=%_my_datetime:.=_%
+
+
+echo *** Running at %_my_datetime%
+set BITDUST_GIT_REPO=https://github.com/bitdust-io/public.git
+
 
 echo *** Verifying BitDust installation files
-
-
 set CURRENT_PATH=%cd%
 set BITDUST_FULL_HOME=%HOMEDRIVE%%HOMEPATH%\.bitdust
-echo *** Destination folder is %BITDUST_FULL_HOME%
+set PYTHON_ZIP=%CURRENT_PATH%\resources\app\build_resources\win\python.zip
+set GIT_ZIP=%CURRENT_PATH%\resources\app\build_resources\win\git.zip
+set UNZIP_EXE=%CURRENT_PATH%\resources\app\build_resources\win\unzip.exe
 
 
+echo *** My Home folder expected to be %BITDUST_FULL_HOME%
 if not exist "%BITDUST_FULL_HOME%" echo Prepare destination folder %BITDUST_FULL_HOME%
 if not exist "%BITDUST_FULL_HOME%" mkdir "%BITDUST_FULL_HOME%"
+
+
+rem TODO : check appdata file also
 
 
 set SHORT_PATH_SCRIPT=%BITDUST_FULL_HOME%\shortpath.bat
 set SHORT_PATH_OUT=%BITDUST_FULL_HOME%\shortpath.txt
 if exist "%SHORT_PATH_OUT%" goto ShortPathKnown
-
-echo *** Prepare short path to the data folder
+echo *** Prepare short path to my Home folder
 echo @echo OFF > "%SHORT_PATH_SCRIPT%"
 echo echo %%~s1 >> "%SHORT_PATH_SCRIPT%"
 call "%SHORT_PATH_SCRIPT%" "%BITDUST_FULL_HOME%" > "%SHORT_PATH_OUT%"
 del /q /s /f "%SHORT_PATH_SCRIPT%" >nul 2>&1
-
-
 :ShortPathKnown
 set /P BITDUST_HOME=<"%SHORT_PATH_OUT%"
 setlocal enabledelayedexpansion
 for /l %%a in (1,1,300) do if "!BITDUST_HOME:~-1!"==" " set BITDUST_HOME=!BITDUST_HOME:~0,-1!
 setlocal disabledelayedexpansion
-echo *** Short and safe path is %BITDUST_HOME%
+echo *** Short and safe path to BitDust home folder is %BITDUST_HOME%
 
 
 set BITDUST_NODE=%BITDUST_HOME%\venv\Scripts\BitDustNode.exe
-echo *** Executable file is %BITDUST_HOME%
+set BITDUST_NODE_CONSOLE=%BITDUST_HOME%\venv\Scripts\BitDustConsole.exe
 
 
-if /I "%~1"=="stop" goto StopBitDist
+echo *** BitDust Home location is "%BITDUST_HOME%"
+set PYTHON_EXE=%BITDUST_HOME%\python\python.exe
+echo *** python.exe is %PYTHON_EXE%
+set GIT_EXE=%BITDUST_HOME%\git\bin\git.exe
+echo *** git.exe is %GIT_EXE%
+
+
+if /I "%~1"=="stop" goto StopBitDust
 goto StartBitDust
-
-:StopBitDist
+:StopBitDust
 echo *** Stopping BitDust ...
 cd /D "%BITDUST_HOME%"
-echo "%BITDUST_NODE%" "%BITDUST_HOME%\src\bitdust.py stop"
-%BITDUST_NODE% %BITDUST_HOME%\src\bitdust.py stop
+if not exist %BITDUST_NODE_CONSOLE% goto KillBitDust
+echo *** Executing : "%BITDUST_NODE_CONSOLE%" "%BITDUST_HOME%\src\bitdust.py stop"
+%BITDUST_NODE_CONSOLE% %BITDUST_HOME%\src\bitdust.py stop
+:KillBitDust
+taskkill /IM BitDustNode.exe /F /T
+taskkill /IM BitDustConsole.exe /F /T
+:BitDustStopped
+echo *** BitDust process stopped, DONE!
 exit /b %errorlevel%
 
+
 :StartBitDust
-echo *** Prepare BitDust local files
-
-
-set TMPDIR=%TEMP%\BitDust_Install_TEMP
-if not exist %TMPDIR% mkdir %TMPDIR%
-echo *** Prepared temp folder in %TMPDIR%
-
-
-cd /D %TMPDIR%
-
-
-set FINISHED="%TMPDIR%\finished.bat"
-echo @echo off > %FINISHED%
-echo echo. >> %FINISHED%
-echo echo. >> %FINISHED%
-echo echo. >> %FINISHED%
-echo echo. >> %FINISHED%
-echo echo. >> %FINISHED%
-echo echo INSTALLATION SUCCESSFULLY FINISHED !!! >> %FINISHED%
-echo echo. >> %FINISHED%
-echo echo A python script %HOMEDRIVE%%HOMEPATH%\.bitdust\src\bitdust.py is main entry point to run the software. >> %FINISHED%
-echo echo You can click on the new icon created on the desktop to open the root application folder. >> %FINISHED%
-echo echo Use those shortcuts to control BitDust at any time: >> %FINISHED%
-echo echo     START:            execute the main process and/or open the web browser to access the user interface >> %FINISHED%
-echo echo     STOP:             stop (or kill) the main BitDust process completely >> %FINISHED%
-echo echo     SYNCHRONIZE:      update BitDust sources from the public repository >> %FINISHED%
-echo echo     SYNC^^^&RESTART:     update sources and restart the software softly in background >> %FINISHED%
-echo echo     DEBUG:            run the program in debug mode so you can watch the full program output >> %FINISHED%
-echo echo. >> %FINISHED%
-echo echo To be sure you are running the latest version use "SYNCHRONIZE" and "SYNC&RESTART" shortcuts. >> %FINISHED%
-echo echo You may want to copy "SYNC^&RESTART" shortcut to Startup folder in the Windows Start menu to start the program during bootup process - jsut to keep it fresh and updated. >> %FINISHED%
-echo echo. >> %FINISHED%
-echo echo Now executing "START" command and running BitDust software in background mode, this window can be closed now. >> %FINISHED%
-echo echo Your web browser will be opened at the moment and you will see the starting page. >> %FINISHED%
-echo echo. >> %FINISHED%
-echo echo Welcome to the BitDust World !!!. >> %FINISHED%
-echo echo. >> %FINISHED%
-echo echo. >> %FINISHED%
-echo echo. >> %FINISHED%
-
-
-echo *** Checking wget.exe file
-if exist wget0.exe goto WGetDownloaded
-
-
-set DLOAD_SCRIPT="download.vbs"
-echo Option Explicit                                                    >  %DLOAD_SCRIPT%
-echo Dim args, http, fileSystem, adoStream, url, target, status         >> %DLOAD_SCRIPT%
-echo.                                                                   >> %DLOAD_SCRIPT%
-echo Set args = Wscript.Arguments                                       >> %DLOAD_SCRIPT%
-echo Set http = CreateObject("WinHttp.WinHttpRequest.5.1")              >> %DLOAD_SCRIPT%
-echo url = args(0)                                                      >> %DLOAD_SCRIPT%
-echo target = args(1)                                                   >> %DLOAD_SCRIPT%
-echo.                                                                   >> %DLOAD_SCRIPT%
-echo http.Open "GET", url, False                                        >> %DLOAD_SCRIPT%
-echo http.Send                                                          >> %DLOAD_SCRIPT%
-echo status = http.Status                                               >> %DLOAD_SCRIPT%
-echo.                                                                   >> %DLOAD_SCRIPT%
-echo If status ^<^> 200 Then                                            >> %DLOAD_SCRIPT%
-echo    WScript.Echo "FAILED to download: HTTP Status " ^& status       >> %DLOAD_SCRIPT%
-echo    WScript.Quit 1                                                  >> %DLOAD_SCRIPT%
-echo End If                                                             >> %DLOAD_SCRIPT%
-echo.                                                                   >> %DLOAD_SCRIPT%
-echo Set adoStream = CreateObject("ADODB.Stream")                       >> %DLOAD_SCRIPT%
-echo adoStream.Open                                                     >> %DLOAD_SCRIPT%
-echo adoStream.Type = 1                                                 >> %DLOAD_SCRIPT%
-echo adoStream.Write http.ResponseBody                                  >> %DLOAD_SCRIPT%
-echo adoStream.Position = 0                                             >> %DLOAD_SCRIPT%
-echo.                                                                   >> %DLOAD_SCRIPT%
-echo Set fileSystem = CreateObject("Scripting.FileSystemObject")        >> %DLOAD_SCRIPT%
-echo If fileSystem.FileExists(target) Then fileSystem.DeleteFile target >> %DLOAD_SCRIPT%
-echo adoStream.SaveToFile target                                        >> %DLOAD_SCRIPT%
-echo adoStream.Close                                                    >> %DLOAD_SCRIPT%
-echo.                                                                   >> %DLOAD_SCRIPT%
-
-
-echo *** Downloading wget.exe
-cscript //Nologo %DLOAD_SCRIPT% https://eternallybored.org/misc/wget/1.19.4/32/wget.exe wget0.exe
-:WGetDownloaded
-
-
-if exist unzip.exe goto UnZIPDownloaded 
-echo *** Downloading unzip.exe
-wget0.exe -q --no-check-certificate http://www2.cs.uidaho.edu/~jeffery/win32/unzip.exe 
-:UnZIPDownloaded
-
-
-set EXTRACT_SCRIPT="msiextract.vbs"
-echo Set args = Wscript.Arguments > %EXTRACT_SCRIPT%
-echo Set objShell = CreateObject("Wscript.Shell") >> %EXTRACT_SCRIPT%
-echo objCommand ^= ^"msiexec /a ^" ^& Chr(34) ^& args(0) ^& Chr(34) ^& ^" /qn /quiet TargetDir^=^" ^& Chr(34) ^& args(1) ^& Chr(34) >> %EXTRACT_SCRIPT%
-echo objShell.Run objCommand, 1, true >> %EXTRACT_SCRIPT%
-
-
-set SUBSTITUTE="substitute.vbs"
-echo strFileName ^= Wscript.Arguments(0) > %SUBSTITUTE%
-echo strOldText ^= Wscript.Arguments(1) >> %SUBSTITUTE%
-echo strNewText ^= Wscript.Arguments(2) >> %SUBSTITUTE%
-echo Set objFSO = CreateObject("Scripting.FileSystemObject") >> %SUBSTITUTE%
-echo Set objFile = objFSO.OpenTextFile(strFileName, 1) >> %SUBSTITUTE%
-echo strText = objFile.ReadAll >> %SUBSTITUTE%
-echo objFile.Close >> %SUBSTITUTE%
-echo strNewText = Replace(strText, strOldText, strNewText) >> %SUBSTITUTE%
-echo Set objFile = objFSO.OpenTextFile(strFileName, 2) >> %SUBSTITUTE%
-echo objFile.WriteLine strNewText >> %SUBSTITUTE%
-echo objFile.Close >> %SUBSTITUTE%
+echo *** Prepare to start BitDust
 
 
 echo *** Checking for python binaries in the destination folder %BITDUST_HOME%\python\
-if exist %BITDUST_HOME%\python\python.exe goto PythonInstalled
-
-
+if exist %PYTHON_EXE% goto PythonInstalled
 :PythonToBeInstalled
-if exist python-2.7.15.amd64.msi goto PythonDownloaded
-echo *** Downloading python-2.7.15.amd64.msi
-wget0.exe -q --no-check-certificate https://www.python.org/ftp/python/2.7.15/python-2.7.15.amd64.msi
-:PythonDownloaded
-echo *** Extracting python-2.7.15.amd64.msi to %BITDUST_HOME%\python
-if not exist %BITDUST_HOME%\python mkdir "%BITDUST_HOME%\python"
-msiexec /a "%TMPDIR%\python-2.7.15.amd64.msi" /qb TARGETDIR="%BITDUST_HOME%\python"
-echo *** Verifying Python binaries
-if exist %BITDUST_HOME%\python\python.exe goto PythonInstalled
-echo *** Python installation to %BITDUST_HOME%\python was failed!
-goto DEPLOY_ERROR
-:PythonInstalled
-
-
-echo *** Identifying Python version
-%BITDUST_HOME%\python\python.exe --version 2> "%BITDUST_HOME%\python_version.txt"
-set /p PYTHON_VERSION=<"%BITDUST_HOME%\python_version.txt"
-echo "%PYTHON_VERSION%"
-if errorlevel 0 goto ContinueInstall
-echo *** Python installation in %BITDUST_HOME%\python is corrupted!
-goto DEPLOY_ERROR
-:ContinueInstall
-
-
-echo *** Verifying Python version
-if "%PYTHON_VERSION%" == "Python 2.7.15" goto PythonVersionOK
-echo *** Stopping BitDustNode instance
-taskkill  /IM BitDustNode.exe /F /T
-del /q /f /s %BITDUST_HOME%\python >nul 2>&1
-goto PythonToBeInstalled
-:PythonVersionOK
-
-
-echo *** Checking for pip installed
-if exist %BITDUST_HOME%\python\Scripts\pip.exe goto PipInstalled
-echo *** Installing pip
-del /F /Q get-pip.py >nul 2>&1
-wget0.exe -q --no-check-certificate https://bootstrap.pypa.io/get-pip.py
-%BITDUST_HOME%\python\python.exe get-pip.py
+echo *** Extract Python binaries to the destination folder %BITDUST_HOME%
+%UNZIP_EXE% -o -q %PYTHON_ZIP% -d %BITDUST_HOME%
 if %errorlevel% neq 0 goto DEPLOY_ERROR
-:PipInstalled
+:PythonInstalled
+echo *** Python binaries located in %BITDUST_HOME%\python
 
 
 echo *** Checking for git binaries in the destination folder
-if exist %BITDUST_HOME%\git\bin\git.exe goto GitInstalled
-if exist Git-2.10.0-32-bit.exe goto GitDownloaded 
-echo *** Downloading Git-2.10.0-32-bit.exe
-wget0.exe -q --no-check-certificate https://github.com/git-for-windows/git/releases/download/v2.10.0.windows.1/Git-2.10.0-32-bit.exe
-if %errorlevel% neq 0 goto DEPLOY_ERROR
-:GitDownloaded
-echo *** Extracting Git-2.10.0-32-bit.exe to %TMPDIR%\git_temp
-Git-2.10.0-32-bit.exe /DIR="%BITDUST_HOME%\git" /NOICONS /VERYSILENT /SUPPRESSMSGBOXES /NOCANCEL /NORESTART /COMPONENTS=""
-if %errorlevel% neq 0 goto DEPLOY_ERROR
-:GitExtracted
+if exist %GIT_EXE% goto GitInstalled
+echo *** Extract Python binaries to the destination folder %BITDUST_HOME%
+%UNZIP_EXE% -o -q %GIT_ZIP% -d %BITDUST_HOME%
 if %errorlevel% neq 0 goto DEPLOY_ERROR
 :GitInstalled
+echo *** Git binaries located in %BITDUST_HOME%\git
 
 
-echo *** Checking for pywin32 installed
-if exist %BITDUST_HOME%\python\Lib\site-packages\win32\win32api.pyd goto PyWin32Installed
-if exist pywin32-223.win-amd64-py2.7.exe  goto PyWin32Downloaded
-echo *** Downloading pywin32-223.win-amd64-py2.7.exe
-wget0.exe -q --no-check-certificate https://github.com/mhammond/pywin32/releases/download/b223/pywin32-223.win-amd64-py2.7.exe
-if %errorlevel% neq 0 goto DEPLOY_ERROR
-:PyWin32Downloaded
-echo *** Installing pywin32-223.win-amd64-py2.7.exe
-del /q /s /f pywin32 >nul 2>&1
-unzip.exe -o -q pywin32-223.win-amd64-py2.7.exe -d pywin32
-xcopy pywin32\PLATLIB\*.* %BITDUST_HOME%\python\Lib\site-packages /E /I /Q /Y
-%BITDUST_HOME%\python\python.exe pywin32\SCRIPTS\pywin32_postinstall.py -install
-:PyWin32Installed
-
-
-goto IncrementalInstalled
-echo *** Checking for Incremental installed
-if exist %BITDUST_HOME%\python\Lib\site-packages\incremental\__init__.py goto IncrementalInstalled
-if exist incremental-17.5.0-py2.py3-none-any.whl  goto IncrementalDownloaded 
-echo *** Downloading incremental-17.5.0-py2.py3-none-any.whl
-wget0.exe -q --no-check-certificate "https://files.pythonhosted.org/packages/f5/1d/c98a587dc06e107115cf4a58b49de20b19222c83d75335a192052af4c4b7/incremental-17.5.0-py2.py3-none-any.whl"
-if %errorlevel% neq 0 goto DEPLOY_ERROR
-:IncrementalDownloaded
-echo *** Installing incremental-17.5.0-py2.py3-none-any.whl
-%BITDUST_HOME%\python\Scripts\pip.exe install incremental-17.5.0-py2.py3-none-any.whl
-:IncrementalInstalled
-
-
-goto TwistedInstalled
-echo *** Checking for Twisted installed
-if exist %BITDUST_HOME%\python\Lib\site-packages\twisted\__init__.py goto TwistedInstalled
-if exist Twisted-17.9.0-cp27-cp27m-win32.whl  goto TwistedDownloaded 
-echo *** Downloading Twisted-17.9.0-cp27-cp27m-win32.whl
-wget0.exe -q --no-check-certificate "https://github.com/zerodhatech/python-wheels/raw/master/Twisted-17.9.0-cp27-cp27m-win32.whl"
-if %errorlevel% neq 0 goto DEPLOY_ERROR
-:TwistedDownloaded
-echo *** Installing Twisted-17.9.0-cp27-cp27m-win32.whl
-%BITDUST_HOME%\python\Scripts\pip.exe install Twisted-17.9.0-cp27-cp27m-win32.whl
-:TwistedInstalled
-
-
-echo *** Prepare sources folder
+echo *** Checking BitDust engine sources
 if not exist %BITDUST_HOME%\src mkdir %BITDUST_HOME%\src
-
-
 cd /D %BITDUST_HOME%\src
 
 
 if exist %BITDUST_HOME%\src\bitdust.py goto SourcesExist
-echo *** Downloading BitDust software using "git clone" from GitHub devel repository
-%BITDUST_HOME%\git\bin\git.exe clone -q --depth 1 https://github.com/bitdust-io/public.git .
+echo *** Downloading BitDust software using "git clone" from GitHub repository
+%BITDUST_HOME%\git\bin\git.exe clone -q --depth 1 %BITDUST_GIT_REPO% .
 if %errorlevel% neq 0 goto DEPLOY_ERROR
 :SourcesExist
 
 
 echo *** Running command "git clean" in BitDust repository
 %BITDUST_HOME%\git\bin\git.exe clean -q -d -f -x .
+if %errorlevel% neq 0 goto DEPLOY_ERROR
+echo *** Running command "git fetch" in BitDust repository
+%BITDUST_HOME%\git\bin\git.exe fetch --all
+if %errorlevel% neq 0 goto DEPLOY_ERROR
 echo *** Running command "git reset" in BitDust repository
 %BITDUST_HOME%\git\bin\git.exe reset --hard origin/master
-echo *** Running command "git pull" in BitDust repository
-%BITDUST_HOME%\git\bin\git.exe pull
+if %errorlevel% neq 0 goto DEPLOY_ERROR
 
 
 echo *** Checking BitDust virtual environment
-if exist %BITDUST_HOME%\venv goto VenvExist
-echo *** Checking/Installing virtualenv tool
-%BITDUST_HOME%\python\Scripts\pip.exe install virtualenv
-if %errorlevel% neq 0 goto DEPLOY_ERROR
+if exist %BITDUST_HOME%\venv goto VenvUpdate
 echo *** Deploy BitDust virtual environment
-%BITDUST_HOME%\python\python.exe bitdust.py install
+%PYTHON_EXE% bitdust.py install
 if %errorlevel% neq 0 goto DEPLOY_ERROR
 goto VenvOk
-:VenvExist
+:VenvUpdate
 echo *** Update BitDust requirements
-%BITDUST_HOME%\python\Scripts\pip.exe install -U -r %BITDUST_HOME%\src\requirements.txt
+%BITDUST_HOME%\venv\Scripts\pip.exe install -U -r %BITDUST_HOME%\src\requirements.txt
+if %errorlevel% neq 0 goto DEPLOY_ERROR
 :VenvOk
 
 
-echo *** Make sure Python "alias" created in %BITDUST_NODE%
+cd /D %BITDUST_HOME%
+
+
+echo *** Check BitDustNode.exe "alias" created in %BITDUST_NODE%
 if exist %BITDUST_NODE% goto BitDustNodeExeExist
-copy /B /Y %BITDUST_HOME%\venv\Scripts\python.exe %BITDUST_NODE%
-echo *** Created %BITDUST_NODE% "alias" from %BITDUST_HOME%\venv\Scripts\python.exe
+copy /B /Y %BITDUST_HOME%\venv\Scripts\pythonw.exe %BITDUST_NODE%
+echo *** Copied %BITDUST_HOME%\venv\Scripts\pythonw.exe to %BITDUST_NODE% 
 :BitDustNodeExeExist
 
 
-cd /D %BITDUST_HOME%\
+echo *** Check BitDustConsole.exe "alias" created in %BITDUST_NODE_CONSOLE%
+if exist %BITDUST_NODE_CONSOLE% goto BitDustConsoleExeExist
+copy /B /Y %BITDUST_HOME%\venv\Scripts\python.exe %BITDUST_NODE_CONSOLE%
+echo *** Copied %BITDUST_HOME%\venv\Scripts\python.exe to %BITDUST_NODE_CONSOLE% 
+:BitDustConsoleExeExist
 
 
+echo *** Checking BitDust UI sources
+if not exist %BITDUST_HOME%\ui mkdir %BITDUST_HOME%\ui
 if exist %BITDUST_HOME%\ui\index.html goto UISourcesExist
-echo *** Downloading BitDust UI using "git clone" from GitHub devel repository
+echo *** Downloading BitDust UI using "git clone" from GitHub repository
 %BITDUST_HOME%\git\bin\git.exe clone -q --depth 1 https://github.com/bitdust-io/web.git ui
 if %errorlevel% neq 0 goto DEPLOY_ERROR
 :UISourcesExist
@@ -316,27 +159,29 @@ if %errorlevel% neq 0 goto DEPLOY_ERROR
 cd /D %BITDUST_HOME%\ui\
 echo *** Running command "git clean" in BitDust UI repository
 %BITDUST_HOME%\git\bin\git.exe clean -q -d -f -x .
+if %errorlevel% neq 0 goto DEPLOY_ERROR
+echo *** Running command "git fetch" in BitDust UI repository
+%BITDUST_HOME%\git\bin\git.exe fetch --all
+if %errorlevel% neq 0 goto DEPLOY_ERROR
 echo *** Running command "git reset" in BitDust UI repository
 %BITDUST_HOME%\git\bin\git.exe reset --hard origin/master
-echo *** Running command "git pull" in BitDust UI repository
-%BITDUST_HOME%\git\bin\git.exe pull
+if %errorlevel% neq 0 goto DEPLOY_ERROR
 
 
+echo *** DEPLOY SUCCESS
 goto DEPLOY_SUCCESS
 
 
 :DEPLOY_ERROR
-echo DEPLOYMENT FAILED
+echo *** DEPLOYMENT FAILED
 echo.
 exit /b %errorlevel%
 
 
 :DEPLOY_SUCCESS
-echo *** Starting BitDust ...
+echo *** Starting BitDust daemon
 cd /D "%BITDUST_HOME%"
-echo "%BITDUST_NODE%" "%BITDUST_HOME%\src\bitdust.py daemon"
 %BITDUST_NODE% %BITDUST_HOME%\src\bitdust.py daemon
 cd /D "%CURRENT_PATH%"
-echo SUCCESS
+echo *** DONE
 echo.
-
