@@ -21,8 +21,8 @@ function createSplashScreen() {
         movable: true,
         minimizable: false,
         maximizable: false,
-        alwaysOnTop: true,
-        skipTaskbar: true,
+        alwaysOnTop: false,
+        skipTaskbar: false,
     })
     splashScreen.loadURL(url.format({
         pathname: path.join(__dirname, './html/splash.html'),
