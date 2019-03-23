@@ -22,6 +22,7 @@ function showWindow() {
         }
     } else {
         win = ui.createMainWindow()
+        win.webContents.openDevTools()
         win.on('closed', () => {
             win = null
         })
