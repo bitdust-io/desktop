@@ -13,8 +13,8 @@ const uiDir = `${os.homedir()}/.bitdust/ui`
 function createSplashScreen() {
     log.warn('createSplashScreen')
     let splashScreen = new BrowserWindow({
-        width: 700,
-        height: 500,
+        width: 800,
+        height: 600,
         center: true,
         frame: false,
         resizable: false,
@@ -40,19 +40,18 @@ function createSplashScreen() {
 
 function createMainWindow() {
     const win = new BrowserWindow({
-        minWidth: 900,
-        minHeight: 700,
-        width: 1024,
-        height: 768,
+        minWidth: 1200,
+        minHeight: 800,
+        width: 1280,
+        height: 900,
         title: 'BitDust',
-        devTools: true,
-        titleBarStyle: 'hidden'
-    })
+        devTools: false
+    });
 
     if (process.env.ELECTRON_ENV === 'debug') {
         win.loadURL('http://localhost:8080/')
     } else {
-		log.warn('Opening main UI page: ' + path.join(uiDir, 'dist/index.html'))
+        log.warn('Opening main UI page: ' + path.join(uiDir, 'dist/index.html'))
         win.loadFile(path.join(uiDir, 'dist/index.html'))
     }
     return win
