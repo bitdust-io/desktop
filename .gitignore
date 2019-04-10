@@ -3,7 +3,7 @@ node_modules
 .idea
 dist
 .DS_Store
-*.deb
-*.dmg
-*.exe
+# *.deb
+# *.dmg
+# *.exe
 
