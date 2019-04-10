@@ -19,6 +19,10 @@ set PYTHON_ZIP=%CURRENT_PATH%\resources\app\build_resources\win\python.zip
 set GIT_ZIP=%CURRENT_PATH%\resources\app\build_resources\win\git.zip
 set UNZIP_EXE=%CURRENT_PATH%\resources\app\build_resources\win\unzip.exe
 
+if not exist "%PYTHON_ZIP%" set PYTHON_ZIP=%CURRENT_PATH%\build_resources\win\python.zip
+if not exist "%GIT_ZIP%" set GIT_ZIP=%CURRENT_PATH%\build_resources\win\git.zip
+if not exist "%UNZIP_EXE%" set UNZIP_EXE=%CURRENT_PATH%\build_resources\win\unzip.exe
+
 
 echo *** My Home folder expected to be %BITDUST_FULL_HOME%
 if not exist "%BITDUST_FULL_HOME%" echo Prepare destination folder %BITDUST_FULL_HOME%
