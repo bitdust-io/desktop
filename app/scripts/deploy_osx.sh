@@ -80,7 +80,7 @@ if [[ ! -e $SOURCE_DIR ]]; then
     echo ''
     echo "##### Сloning the source code of BitDust project to $SOURCE_DIR"
     mkdir -p $SOURCE_DIR
-    $GIT_BIN clone --depth=1 "git://github.com/bitdust-io/devel.git" "$SOURCE_DIR"
+    $GIT_BIN clone --depth=1 "git://github.com/bitdust-io/public.git" "$SOURCE_DIR"
 else
     echo ''
     echo '##### BitDust source code already cloned locally, updating...'

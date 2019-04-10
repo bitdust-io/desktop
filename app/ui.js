@@ -16,10 +16,10 @@ function createSplashScreen() {
         width: 800,
         height: 600,
         center: true,
-        frame: false,
+        frame: true,
         resizable: false,
         movable: true,
-        minimizable: false,
+        minimizable: true,
         maximizable: false,
         alwaysOnTop: false,
         skipTaskbar: false,
@@ -40,12 +40,12 @@ function createSplashScreen() {
 
 function createMainWindow() {
     const win = new BrowserWindow({
-        minWidth: 1200,
-        minHeight: 800,
-        width: 1280,
-        height: 900,
+        minWidth: 600,
+        minHeight: 480,
+        width: 800,
+        height: 600,
         title: 'BitDust',
-        devTools: false
+        devTools: true
     });
 
     if (process.env.ELECTRON_ENV === 'debug') {
