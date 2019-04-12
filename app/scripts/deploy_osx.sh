@@ -1,12 +1,12 @@
 #!/bin/bash
 
+# TODO: check "appdata" file and detect location of $ROOT_DIR if it is there
 
 ROOT_DIR="$HOME/.bitdust"
 SOURCE_DIR="${ROOT_DIR}/src"
 SOURCE_UI_DIR="${ROOT_DIR}/ui"
 VENV_DIR="${ROOT_DIR}/venv"
 PYTHON_BIN="${ROOT_DIR}/venv/bin/python"
-GIT_BIN="${ROOT_DIR}/git/bin/git"
 PIP_BIN="${ROOT_DIR}/venv/bin/pip"
 BITDUST_PY="${SOURCE_DIR}/bitdust.py"
 BITDUST_COMMAND_FILE="${ROOT_DIR}/bitdust"
@@ -25,15 +25,28 @@ if [[ ! -e $ROOT_DIR ]]; then
     echo ''
     echo "##### Create BitDust Home folder at $ROOT_DIR"
     mkdir -p $ROOT_DIR
+else
+    echo ''
+    echo "##### BitDust Home folder found at $ROOT_DIR"
 fi
 
 
-if [[ ! -f $GIT_BIN ]]; then
+cd "$ROOT_DIR"
+
+
+gitok=`which git`
+
+if [[ ! $gitok ]]; then
+    GIT_BIN="${ROOT_DIR}/git/bin/git"
     echo ''
-    echo "##### Copy GIT binariy from distribution to ${GIT_BIN}"
+    echo "##### Copy GIT binariy from distribution to $GIT_BIN"
     mkdir -p "${ROOT_DIR}/git/bin/"
     CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
     cp "${CURRENT_DIR}/../../build_resources/macos/git" "$ROOT_DIR/git/bin/"
+else
+    GIT_BIN=`which git`
+    echo ''
+    echo "##### GIT already installed globally at $GIT_BIN"
 fi
 
 
@@ -73,19 +86,20 @@ else
 fi
 
 
-cd $ROOT_DIR
-
-
 if [[ ! -e $SOURCE_DIR ]]; then
     echo ''
-    echo "##### Сloning the source code of BitDust project to $SOURCE_DIR"
-    mkdir -p $SOURCE_DIR
+    echo "##### Сloning source code of BitDust project to $SOURCE_DIR"
+    mkdir -p "$SOURCE_DIR"
     $GIT_BIN clone --depth=1 "git://github.com/bitdust-io/public.git" "$SOURCE_DIR"
 else
     echo ''
-    echo '##### BitDust source code already cloned locally, updating...'
-    cd $SOURCE_DIR
-    $GIT_BIN fetch --all
+    echo "##### BitDust source code already cloned locally in $SOURCE_DIR"
+    cd "$SOURCE_DIR"
+    echo ''
+    echo "##### Running 'git fetch' in $SOURCE_DIR"
+    $GIT_BIN fetch
+    echo ''
+    echo "##### Running 'git reset --hard origin/master' in $SOURCE_DIR"
     $GIT_BIN reset --hard origin/master
     cd ..
 fi
@@ -93,14 +107,18 @@ fi
 
 if [[ ! -e $SOURCE_UI_DIR ]]; then
     echo ''
-    echo '##### Сloning the source code of BitDust UI...'
+    echo "##### Сloning source code of BitDust UI in $SOURCE_UI_DIR"
     mkdir -p $SOURCE_UI_DIR
-    $GIT_BIN clone --depth=1 "git://github.com/bitdust-io/web.git" $SOURCE_UI_DIR
+    $GIT_BIN clone --depth=1 "git://github.com/bitdust-io/web.git" "$SOURCE_UI_DIR"
 else
     echo ''
-    echo '##### Updating the source code of BitDust UI...'
+    echo "##### BitDust UI source code already cloned locally in $SOURCE_UI_DIR"
     cd $SOURCE_UI_DIR
-    $GIT_BIN fetch --all
+    echo ''
+    echo "##### Running 'git fetch' in $SOURCE_UI_DIR"
+    $GIT_BIN fetch
+    echo ''
+    echo "##### Running 'git reset --hard origin/master' in $SOURCE_UI_DIR"
     $GIT_BIN reset --hard origin/master
     cd ..
 fi
@@ -108,21 +126,27 @@ fi
 
 if [[ ! -e $VENV_DIR ]]; then
     echo ''
-    echo '##### Building BitDust virtual environment...'
+    echo "##### Installing BitDust, virtual environment location is $VENV_DIR"
     PATH="$HOME/Library/Python/2.7/bin:$PATH" python $BITDUST_PY install
-    ln -s -f $BITDUST_COMMAND_FILE $GLOBAL_COMMAND_FILE
-    echo ''
-    echo '##### System-wide shell command for BitDust created'
 else
+    # TODO: this is slow and can fail if user is offline...
+    # this actually must be only executed when requirements.txt was changed
     echo ''
-    echo '##### BitDust virtual environment already exist, updating...'
+    echo '##### Updating BitDust virtual environment in $VENV_DIR'
     $PIP_BIN install -U -r $SOURCE_DIR/requirements.txt
+fi
+
+
+if [[ ! $GLOBAL_COMMAND_FILE ]]; then
+    echo ''
+    echo "##### Create system-wide shell command for BitDust in $GLOBAL_COMMAND_FILE"
+    ln -s -f $BITDUST_COMMAND_FILE $GLOBAL_COMMAND_FILE
 fi
 
 
 echo ''
 echo '##### Starting BitDust as a daemon process'
-$PYTHON_BIN $BITDUST_PY daemon
+$GLOBAL_COMMAND_FILE daemon
 
 
 echo ''
