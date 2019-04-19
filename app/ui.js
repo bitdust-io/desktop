@@ -23,8 +23,9 @@ function createSplashScreen() {
         minimizable: true,
         maximizable: false,
         alwaysOnTop: false,
-        skipTaskbar: false,
+        skipTaskbar: true
     })
+    splashScreen.setMenu(null);
     splashScreen.loadURL(url.format({
         pathname: path.join(__dirname, './html/splash.html'),
         protocol: 'file:',
@@ -63,7 +64,7 @@ function createMainWindow() {
             }
         }]
     }])
-    Menu.setApplicationMenu(menu); 
+    Menu.setApplicationMenu(menu);
 
     if (process.env.ELECTRON_ENV === 'debug') {
         win.loadURL('http://localhost:8080/')
