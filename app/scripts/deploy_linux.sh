@@ -19,12 +19,12 @@ if [ "$1" = "stop" ]; then
 fi
 
 
-if [ $1 == "restart" ]; then
+if [ "$1" = "restart" ]; then
     echo ''
     echo '##### Restarting BitDust...'
     $PYTHON_BIN $BITDUST_PY restart
     exit 0;
-else
+fi
 
 
 if [ ! -d $ROOT_DIR ]; then
