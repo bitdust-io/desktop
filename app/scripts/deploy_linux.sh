@@ -20,6 +20,14 @@ if [ $1 == "stop" ]; then
 else
 
 
+if [ $1 == "restart" ]; then
+    echo ''
+    echo '##### Restarting BitDust...'
+    $PYTHON_BIN $BITDUST_PY restart
+    exit 0;
+else
+
+
 if [ ! -d $ROOT_DIR ]; then
     echo ''
     echo "##### Create BitDust Home folder at $ROOT_DIR"
