@@ -4,9 +4,10 @@ const path = require('path')
 
 const ipc = require('electron').ipcMain
 
-const {BrowserWindow} = require('electron')
+const {BrowserWindow, Menu} = require('electron')
 const log = require('electron-log')
 
+const setup = require('./setup')
 
 const uiDir = `${os.homedir()}/.bitdust/ui`
 
@@ -44,9 +45,25 @@ function createMainWindow() {
         minHeight: 480,
         width: 800,
         height: 600,
-        title: 'BitDust',
-        devTools: true
+        title: 'BitDust'
+        //devTools: true
     });
+
+    const menu = Menu.buildFromTemplate([{
+        label: 'BitDust',
+        submenu: [{
+            label:'Restart',
+            click() {
+                try {
+                    setup.restartBitDust()
+                    log.warn('restart BitDust DONE')
+                } catch (error) {
+                    log.error(error)
+                }
+            }
+        }]
+    }])
+    Menu.setApplicationMenu(menu); 
 
     if (process.env.ELECTRON_ENV === 'debug') {
         win.loadURL('http://localhost:8080/')

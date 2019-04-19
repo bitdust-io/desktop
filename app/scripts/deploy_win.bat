@@ -60,7 +60,7 @@ echo *** git.exe is %GIT_EXE%
 
 
 if /I "%~1"=="stop" goto StopBitDust
-goto StartBitDust
+goto RestartBitDust
 :StopBitDust
 echo *** Stopping BitDust ...
 cd /D "%BITDUST_HOME%"
@@ -72,6 +72,20 @@ taskkill /IM BitDustNode.exe /F /T
 taskkill /IM BitDustConsole.exe /F /T
 :BitDustStopped
 echo *** BitDust process stopped, DONE!
+exit /b %errorlevel%
+
+
+:RestartBitDust
+if /I "%~1"=="restart" goto RestartBitDust
+goto StartBitDust
+:RestartBitDust
+echo *** Restarting BitDust ...
+cd /D "%BITDUST_HOME%"
+if not exist %BITDUST_NODE_CONSOLE% goto BitDustRestarted
+echo *** Executing : "%BITDUST_NODE_CONSOLE%" "%BITDUST_HOME%\src\bitdust.py restart"
+%BITDUST_NODE_CONSOLE% %BITDUST_HOME%\src\bitdust.py restart
+:BitDustRestarted
+echo *** BitDust process restarted, DONE!
 exit /b %errorlevel%
 
 
