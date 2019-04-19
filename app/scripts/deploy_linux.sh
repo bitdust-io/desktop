@@ -1,6 +1,5 @@
 #!/bin/sh
 
-
 ROOT_DIR="$HOME/.bitdust"
 SOURCE_DIR="${ROOT_DIR}/src"
 SOURCE_UI_DIR="${ROOT_DIR}/ui"
@@ -12,12 +11,12 @@ BITDUST_COMMAND_FILE="${ROOT_DIR}/bitdust"
 GLOBAL_COMMAND_FILE="/usr/local/bin/bitdust"
 
 
-if [ $1 == "stop" ]; then
+if [ "$1" = "stop" ]; then
     echo ''
     echo '##### Stopping BitDust...'
     $PYTHON_BIN $BITDUST_PY stop
     exit 0;
-else
+fi
 
 
 if [ ! -d $ROOT_DIR ]; then
@@ -63,10 +62,10 @@ else
     cd $SOURCE_UI_DIR
     echo ''
     echo "##### Running 'git fetch' in $SOURCE_UI_DIR"
-    $GIT_BIN fetch
+    git fetch
     echo ''
     echo "##### Running 'git reset --hard origin/master' in $SOURCE_UI_DIR"
-    $GIT_BIN reset --hard origin/master
+    git reset --hard origin/master
     cd ..
 fi
 
@@ -99,6 +98,7 @@ $GLOBAL_COMMAND_FILE daemon
 
 echo ''
 echo '##### DONE!!!'
+
 
 exit 0
 
