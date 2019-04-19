@@ -52,6 +52,7 @@ function showDialogOnExit(e) {
     }
 }
 
+
 async function init() {
     try {
         const splashScreen = ui.createSplashScreen()
@@ -64,6 +65,7 @@ async function init() {
         log.error(error)
     }
 }
+
 
 async function shutdown() {
     try {

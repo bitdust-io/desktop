@@ -23,7 +23,9 @@ function createSplashScreen() {
         minimizable: true,
         maximizable: false,
         alwaysOnTop: false,
-        skipTaskbar: true
+        //skipTaskbar: true,
+        //kiosk:true,
+        //fullscreen: true,
     })
     splashScreen.setMenu(null);
     splashScreen.loadURL(url.format({
