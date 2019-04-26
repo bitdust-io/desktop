@@ -17,6 +17,8 @@ if [[ "$1" == "stop" ]]; then
     echo ''
     echo '##### Stopping BitDust...'
     $PYTHON_BIN $BITDUST_PY stop
+    echo ''
+    echo '##### DONE!!!'
     exit 0;
 fi
 
@@ -25,6 +27,8 @@ if [[ "$1" == "restart" ]]; then
     echo ''
     echo '##### Restarting BitDust...'
     $PYTHON_BIN $BITDUST_PY restart
+    echo ''
+    echo '##### DONE!!!'
     exit 0;
 fi
 
@@ -117,7 +121,7 @@ if [[ ! -e $SOURCE_UI_DIR ]]; then
     echo ''
     echo "##### Сloning source code of BitDust UI in $SOURCE_UI_DIR"
     mkdir -p $SOURCE_UI_DIR
-    $GIT_BIN clone --depth=1 "git://github.com/bitdust-io/web.git" "$SOURCE_UI_DIR"
+    $GIT_BIN clone --depth=1 "git://github.com/bitdust-io/ui.git" "$SOURCE_UI_DIR"
 else
     echo ''
     echo "##### BitDust UI source code already cloned locally in $SOURCE_UI_DIR"
