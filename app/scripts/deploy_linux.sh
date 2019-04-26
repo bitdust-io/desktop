@@ -15,6 +15,8 @@ if [ "$1" = "stop" ]; then
     echo ''
     echo '##### Stopping BitDust...'
     $PYTHON_BIN $BITDUST_PY stop
+    echo ''
+    echo '##### DONE!!!'
     exit 0;
 fi
 
@@ -23,6 +25,8 @@ if [ "$1" = "restart" ]; then
     echo ''
     echo '##### Restarting BitDust...'
     $PYTHON_BIN $BITDUST_PY restart
+    echo ''
+    echo '##### DONE!!!'
     exit 0;
 fi
 
