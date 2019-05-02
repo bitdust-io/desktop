@@ -18,6 +18,8 @@ set BITDUST_FULL_HOME=%HOMEDRIVE%%HOMEPATH%\.bitdust
 set PYTHON_ZIP=%CURRENT_PATH%\resources\app\build_resources\win\python.zip
 set GIT_ZIP=%CURRENT_PATH%\resources\app\build_resources\win\git.zip
 set UNZIP_EXE=%CURRENT_PATH%\resources\app\build_resources\win\unzip.exe
+set VCREDIST_EXE=%CURRENT_PATH%\build_resources\win\vc_redist.x64.exe
+set VCREDIST_MARKER_PATH=%BITDUST_FULL_HOME%\vc_redist_started
 
 if not exist "%PYTHON_ZIP%" set PYTHON_ZIP=%CURRENT_PATH%\build_resources\win\python.zip
 if not exist "%GIT_ZIP%" set GIT_ZIP=%CURRENT_PATH%\build_resources\win\git.zip
@@ -91,6 +93,16 @@ exit /b %errorlevel%
 
 :StartBitDust
 echo *** Prepare to start BitDust
+
+
+:VCRedistCheckInstall
+echo *** Checking Visual C++ redistributable DLL
+if exist %VCREDIST_MARKER_PATH% goto VCRedistInstallAlreadyStarted
+echo ok> %VCREDIST_MARKER_PATH%
+echo *** Running file %VCREDIST_EXE%
+%VCREDIST_EXE% /install /quite
+:VCRedistInstallAlreadyStarted
+echo *** Visual C++ redistributable DLL installation already was started once
 
 
 echo *** Checking for python binaries in the destination folder %BITDUST_HOME%\python\
