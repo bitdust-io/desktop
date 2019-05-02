@@ -136,7 +136,7 @@ if %errorlevel% neq 0 goto DEPLOY_ERROR
 
 
 echo *** Checking BitDust virtual environment
-if exist %BITDUST_HOME%\venv goto VenvUpdate
+if exist %BITDUST_HOME%\venv\Scripts\pip.exe goto VenvUpdate
 echo *** Deploy BitDust virtual environment
 %PYTHON_EXE% bitdust.py install
 if %errorlevel% neq 0 goto DEPLOY_ERROR
