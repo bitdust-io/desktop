@@ -15,15 +15,17 @@ set BITDUST_GIT_REPO=https://github.com/bitdust-io/public.git
 echo *** Verifying BitDust installation files
 set CURRENT_PATH=%cd%
 set BITDUST_FULL_HOME=%HOMEDRIVE%%HOMEPATH%\.bitdust
+set VCREDIST_MARKER_PATH=%BITDUST_FULL_HOME%\vc_redist_started
+
 set PYTHON_ZIP=%CURRENT_PATH%\resources\app\build_resources\win\python.zip
 set GIT_ZIP=%CURRENT_PATH%\resources\app\build_resources\win\git.zip
 set UNZIP_EXE=%CURRENT_PATH%\resources\app\build_resources\win\unzip.exe
 set VCREDIST_EXE=%CURRENT_PATH%\build_resources\win\vc_redist.x64.exe
-set VCREDIST_MARKER_PATH=%BITDUST_FULL_HOME%\vc_redist_started
 
 if not exist "%PYTHON_ZIP%" set PYTHON_ZIP=%CURRENT_PATH%\build_resources\win\python.zip
 if not exist "%GIT_ZIP%" set GIT_ZIP=%CURRENT_PATH%\build_resources\win\git.zip
 if not exist "%UNZIP_EXE%" set UNZIP_EXE=%CURRENT_PATH%\build_resources\win\unzip.exe
+if not exist "%VCREDIST_EXE%" set VCREDIST_EXE=%CURRENT_PATH%\build_resources\win\vc_redist.x64.exe
 
 
 echo *** My Home folder expected to be %BITDUST_FULL_HOME%
@@ -71,7 +73,7 @@ echo *** Executing : "%BITDUST_NODE_CONSOLE%" "%BITDUST_HOME%\src\bitdust.py sto
 %BITDUST_NODE_CONSOLE% %BITDUST_HOME%\src\bitdust.py stop
 :KillBitDust
 taskkill /IM BitDustNode.exe /F /T
-taskkill /IM BitDustConsole.exe /F /T
+rem taskkill /IM BitDustConsole.exe /F /T
 :BitDustStopped
 echo *** BitDust process stopped, DONE!
 exit /b %errorlevel%
@@ -126,6 +128,8 @@ echo *** Git binaries located in %BITDUST_HOME%\git
 
 echo *** Checking BitDust engine sources
 if not exist %BITDUST_HOME%\src mkdir %BITDUST_HOME%\src
+
+
 cd /D %BITDUST_HOME%\src
 
 
@@ -133,12 +137,12 @@ if exist %BITDUST_HOME%\src\bitdust.py goto SourcesExist
 echo *** Downloading BitDust software using "git clone" from GitHub repository
 %BITDUST_HOME%\git\bin\git.exe clone -q --depth 1 %BITDUST_GIT_REPO% .
 if %errorlevel% neq 0 goto DEPLOY_ERROR
+
+
 :SourcesExist
-
-
-echo *** Running command "git clean" in BitDust repository
-%BITDUST_HOME%\git\bin\git.exe clean -q -d -f -x .
-if %errorlevel% neq 0 goto DEPLOY_ERROR
+rem echo *** Running command "git clean" in BitDust repository
+rem %BITDUST_HOME%\git\bin\git.exe clean -q -d -f -x .
+rem if %errorlevel% neq 0 goto DEPLOY_ERROR
 echo *** Running command "git fetch" in BitDust repository
 %BITDUST_HOME%\git\bin\git.exe fetch --all
 if %errorlevel% neq 0 goto DEPLOY_ERROR
@@ -179,17 +183,20 @@ echo *** Copied %BITDUST_HOME%\venv\Scripts\python.exe to %BITDUST_NODE_CONSOLE%
 
 echo *** Checking BitDust UI sources
 if not exist %BITDUST_HOME%\ui mkdir %BITDUST_HOME%\ui
-if exist %BITDUST_HOME%\ui\index.html goto UISourcesExist
+
+if exist %BITDUST_HOME%\ui\dist\index.html goto UISourcesExist
 echo *** Downloading BitDust UI using "git clone" from GitHub repository
-%BITDUST_HOME%\git\bin\git.exe clone -q --depth 1 https://github.com/bitdust-io/web.git ui
+%BITDUST_HOME%\git\bin\git.exe clone -q --depth 1 https://github.com/bitdust-io/ui.git ui
 if %errorlevel% neq 0 goto DEPLOY_ERROR
 :UISourcesExist
 
 
 cd /D %BITDUST_HOME%\ui\
-echo *** Running command "git clean" in BitDust UI repository
-%BITDUST_HOME%\git\bin\git.exe clean -q -d -f -x .
-if %errorlevel% neq 0 goto DEPLOY_ERROR
+
+
+rem echo *** Running command "git clean" in BitDust UI repository
+rem %BITDUST_HOME%\git\bin\git.exe clean -q -d -f -x .
+rem if %errorlevel% neq 0 goto DEPLOY_ERROR
 echo *** Running command "git fetch" in BitDust UI repository
 %BITDUST_HOME%\git\bin\git.exe fetch --all
 if %errorlevel% neq 0 goto DEPLOY_ERROR
