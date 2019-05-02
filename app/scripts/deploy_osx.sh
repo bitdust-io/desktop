@@ -136,7 +136,7 @@ else
 fi
 
 
-if [[ ! -e $VENV_DIR ]]; then
+if [[ ! -e $PIP_BIN ]]; then
     echo ''
     echo "##### Installing BitDust, virtual environment location is $VENV_DIR"
     PATH="$HOME/Library/Python/2.7/bin:$PATH" python $BITDUST_PY install
