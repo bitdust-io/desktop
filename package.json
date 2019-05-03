@@ -73,6 +73,9 @@
         "!app/scripts/deploy_osx.sh"
       ]
     },
-    "asar": false
+    "asar": false,
+    "nsis": {
+      "include": "build/installer.nsh"
+    }
   }
 }

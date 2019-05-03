@@ -15,17 +15,14 @@ set BITDUST_GIT_REPO=https://github.com/bitdust-io/public.git
 echo *** Verifying BitDust installation files
 set CURRENT_PATH=%cd%
 set BITDUST_FULL_HOME=%HOMEDRIVE%%HOMEPATH%\.bitdust
-set VCREDIST_MARKER_PATH=%BITDUST_FULL_HOME%\vc_redist_started
 
 set PYTHON_ZIP=%CURRENT_PATH%\resources\app\build_resources\win\python.zip
 set GIT_ZIP=%CURRENT_PATH%\resources\app\build_resources\win\git.zip
 set UNZIP_EXE=%CURRENT_PATH%\resources\app\build_resources\win\unzip.exe
-set VCREDIST_EXE=%CURRENT_PATH%\build_resources\win\vc_redist.x64.exe
 
 if not exist "%PYTHON_ZIP%" set PYTHON_ZIP=%CURRENT_PATH%\build_resources\win\python.zip
 if not exist "%GIT_ZIP%" set GIT_ZIP=%CURRENT_PATH%\build_resources\win\git.zip
 if not exist "%UNZIP_EXE%" set UNZIP_EXE=%CURRENT_PATH%\build_resources\win\unzip.exe
-if not exist "%VCREDIST_EXE%" set VCREDIST_EXE=%CURRENT_PATH%\build_resources\win\vc_redist.x64.exe
 
 
 echo *** My Home folder expected to be %BITDUST_FULL_HOME%
@@ -95,18 +92,6 @@ exit /b %errorlevel%
 
 :StartBitDust
 echo *** Prepare to start BitDust
-
-
-:VCRedistCheckInstall
-echo *** Checking Visual C++ redistributable DLL
-if exist %VCREDIST_MARKER_PATH% goto VCRedistInstallAlreadyStarted
-echo ok> %VCREDIST_MARKER_PATH%
-echo *** Running file %VCREDIST_EXE%
-%VCREDIST_EXE% /install /passive /norestart
-goto VCRedistOK
-:VCRedistInstallAlreadyStarted
-echo *** Visual C++ redistributable DLL installation already was started once
-:VCRedistOK
 
 
 echo *** Checking for python binaries in the destination folder %BITDUST_HOME%\python\
