@@ -103,8 +103,10 @@ if exist %VCREDIST_MARKER_PATH% goto VCRedistInstallAlreadyStarted
 echo ok> %VCREDIST_MARKER_PATH%
 echo *** Running file %VCREDIST_EXE%
 %VCREDIST_EXE% /install /passive /norestart
+goto VCRedistOK
 :VCRedistInstallAlreadyStarted
 echo *** Visual C++ redistributable DLL installation already was started once
+:VCRedistOK
 
 
 echo *** Checking for python binaries in the destination folder %BITDUST_HOME%\python\
