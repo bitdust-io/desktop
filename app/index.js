@@ -45,6 +45,13 @@ function showDialogOnExit(e) {
                     win.hide()
                 }
             } else if (response === 1) {
+                try {
+                    //await setup.stopBitDust();
+                    setup.stopBitDust();
+                    log.warn('stop BitDust DONE')
+                } catch (error) {
+                    log.error(error)
+                }
                 showExitPrompt = false
                 app.quit()
             }
@@ -57,7 +64,7 @@ async function init() {
     try {
         const splashScreen = ui.createSplashScreen()
         await setup.runBitDust()
-        log.warn('installBitDust DONE')
+        log.warn('init DONE')
         splashScreen.hide()
         showWindow()
         splashScreen.close()
@@ -68,12 +75,7 @@ async function init() {
 
 
 async function shutdown() {
-    try {
-        await setup.stopBitDust()
-        log.warn('stop BitDust DONE')
-    } catch (error) {
-        log.error(error)
-    }
+    log.warn('shutdown DONE')
 }
 
 
