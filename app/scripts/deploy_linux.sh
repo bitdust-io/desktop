@@ -67,7 +67,7 @@ if [ ! -d $SOURCE_UI_DIR ]; then
     echo ''
     echo "##### Сloning source code of BitDust UI in $SOURCE_UI_DIR"
     mkdir -p $SOURCE_UI_DIR
-    git clone --depth=1 https://github.com/bitdust-io/web.git "$SOURCE_UI_DIR"
+    git clone --depth=1 https://github.com/bitdust-io/ui.git "$SOURCE_UI_DIR"
 else
     echo ''
     echo "##### BitDust UI source code already cloned locally in $SOURCE_UI_DIR"
