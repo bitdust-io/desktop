@@ -15,7 +15,7 @@ const ui = require('./ui')
 let win
 let showExitPrompt = true
 
-function showWindow() {
+async function showWindow() {
     if (win) {
         if (!win.isVisible()) {
             win.show()
@@ -29,7 +29,7 @@ function showWindow() {
     } 
 }
 
-function showDialogOnExit(e) {
+async function showDialogOnExit(e) {
     if (showExitPrompt) {
         e.preventDefault();
         dialog.showMessageBox({
@@ -39,15 +39,15 @@ function showDialogOnExit(e) {
             cancelId: 2,
             title: 'Confirm',
             message: 'Do you want to run BitDust in the background or stop it completely?'
-        }, (response) => {
+        }, async (response) => {
             if (response === 0) {
                 if (win && win.isVisible()) {
                     win.hide()
                 }
             } else if (response === 1) {
                 try {
-                    //await setup.stopBitDust();
-                    setup.stopBitDust();
+                    await setup.stopBitDust();
+                    //setup.stopBitDust();
                     log.warn('stop BitDust DONE')
                 } catch (error) {
                     log.error(error)
