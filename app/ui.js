@@ -22,10 +22,7 @@ function createSplashScreen() {
         movable: true,
         minimizable: true,
         maximizable: false,
-        alwaysOnTop: false,
-        //skipTaskbar: true,
-        //kiosk:true,
-        //fullscreen: true,
+        alwaysOnTop: false
     })
     splashScreen.setMenu(null);
     splashScreen.loadURL(url.format({
@@ -44,10 +41,10 @@ function createSplashScreen() {
 
 function createMainWindow() {
     const win = new BrowserWindow({
-        minWidth: 600,
-        minHeight: 480,
-        width: 800,
-        height: 600,
+        minWidth: 1000,
+        minHeight: 800,
+        width: 1200,
+        height: 800,
         title: 'BitDust'
         //devTools: true
     });
@@ -55,7 +52,7 @@ function createMainWindow() {
     const menu = Menu.buildFromTemplate([{
         label: 'BitDust',
         submenu: [{
-            label:'Restart',
+            label: 'Restart',
             click() {
                 try {
                     setup.restartBitDust()
