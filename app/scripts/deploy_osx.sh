@@ -15,20 +15,20 @@ GLOBAL_COMMAND_FILE="/usr/local/bin/bitdust"
 
 if [[ "$1" == "stop" ]]; then
     echo ''
-    echo '##### Stopping BitDust...'
+    echo '##### Stopping BitDust'
     $PYTHON_BIN $BITDUST_PY stop
     echo ''
-    echo '##### DONE!!!'
+    echo 'DONE'
     exit 0;
 fi
 
 
 if [[ "$1" == "restart" ]]; then
     echo ''
-    echo '##### Restarting BitDust...'
+    echo '##### Restarting BitDust'
     $PYTHON_BIN $BITDUST_PY restart
     echo ''
-    echo '##### DONE!!!'
+    echo 'DONE'
     exit 0;
 fi
 
@@ -144,7 +144,7 @@ else
     # TODO: this is slow and can fail if user is offline...
     # this actually must be only executed when requirements.txt was changed
     echo ''
-    echo '##### Updating BitDust virtual environment in $VENV_DIR'
+    echo "##### Updating BitDust virtual environment in $VENV_DIR"
     $PIP_BIN install -U -r $SOURCE_DIR/requirements.txt
 fi
 
@@ -157,11 +157,11 @@ fi
 
 
 echo ''
-echo '##### Starting BitDust as a daemon process'
+echo "##### Starting BitDust as a daemon process"
 $GLOBAL_COMMAND_FILE daemon
 
 
 echo ''
-echo '##### DONE!!!'
+echo 'DONE'
 
 exit 0

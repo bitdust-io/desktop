@@ -18,6 +18,7 @@
         </div>
     </div>
     <h1>Starting BitDust</h1>
+    <div id="output"></div>
 </div>
 </body>
 
@@ -26,8 +27,11 @@
     const toggleButton = document.getElementById('toggleDebug')
     const ipc = window.require('electron').ipcRenderer
     ipc.on('updateProgressBar', function (event, arg) {
-        output.innerHTML += arg.replace(/\n/g, '<br/>')
-        output.scrollTop = output.scrollHeight;
+        var lines = arg.split("\n");
+        var last_line = lines[lines.length - 2];
+        if (last_line.startsWith('##### ')) {
+           output.innerHTML = last_line.replace('##### ', '');
+        }
     });
     toggleButton.addEventListener('click', function (e) {
         if (this.checked) {

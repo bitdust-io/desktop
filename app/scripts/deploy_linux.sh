@@ -109,7 +109,7 @@ $GLOBAL_COMMAND_FILE daemon
 
 
 echo ''
-echo '##### DONE!!!'
+echo DONE'
 
 
 exit 0
