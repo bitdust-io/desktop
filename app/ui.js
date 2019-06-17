@@ -14,8 +14,8 @@ const uiDir = `${os.homedir()}/.bitdust/ui`
 function createSplashScreen() {
     log.warn('createSplashScreen')
     let splashScreen = new BrowserWindow({
-        width: 800,
-        height: 600,
+        width: 640,
+        height: 480,
         center: true,
         frame: true,
         resizable: false,

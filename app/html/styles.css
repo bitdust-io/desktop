@@ -79,10 +79,6 @@ body {
 }
 
 #output {
-    height: 200px;
-    overflow: scroll;
-    color: rgb(42, 177, 37);
-    background: black;
-    font-family: monospace;
-    visibility: hidden;
+    width: 90%;
+    height: 30px;
 }
