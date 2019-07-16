@@ -36,7 +36,7 @@ rem TODO : check appdata file also
 set SHORT_PATH_SCRIPT=%BITDUST_FULL_HOME%\shortpath.bat
 set SHORT_PATH_OUT=%BITDUST_FULL_HOME%\shortpath.txt
 del /q /s /f "%SHORT_PATH_OUT%" >nul 2>&1
-if exist "%SHORT_PATH_OUT%" goto ShortPathKnown
+rem if exist "%SHORT_PATH_OUT%" goto ShortPathKnown
 echo ##### Prepare short path to my Home folder
 echo @echo OFF > "%SHORT_PATH_SCRIPT%"
 echo echo %%~s1 >> "%SHORT_PATH_SCRIPT%"
