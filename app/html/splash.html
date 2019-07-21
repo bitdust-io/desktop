@@ -18,7 +18,7 @@
         </div>
     </div>
     <h1>Starting BitDust</h1>
-    <div id="output"></div>
+    <p id="output">Extracting Python files</p>
 </div>
 </body>
 
@@ -28,9 +28,17 @@
     const ipc = window.require('electron').ipcRenderer
     ipc.on('updateProgressBar', function (event, arg) {
         var lines = arg.split("\n");
-        var last_line = lines[lines.length - 2];
-        if (last_line.startsWith('##### ')) {
-           output.innerHTML = last_line.replace('##### ', '');
+        var first_line = lines[0];
+        var last_line2 = lines[lines.length - 1];
+        var last_line1 = lines[lines.length - 2];
+        if (last_line1.startsWith('##### ')) {
+           output.innerHTML = last_line1.replace('##### ', '');
+        }
+        else if (last_line2.startsWith('##### ')) {
+           output.innerHTML = last_line2.replace('##### ', '');
+        }
+        else if (first_line.startsWith('##### ')) {
+           output.innerHTML = first_line.replace('##### ', '');
         }
     });
     toggleButton.addEventListener('click', function (e) {
