@@ -33,21 +33,21 @@ if not exist "%BITDUST_FULL_HOME%" mkdir "%BITDUST_FULL_HOME%"
 rem TODO : check appdata file also
 
 
+echo ##### Prepare location for BitDust Home folder
 set SHORT_PATH_SCRIPT=%BITDUST_FULL_HOME%\shortpath.bat
 set SHORT_PATH_OUT=%BITDUST_FULL_HOME%\shortpath.txt
+del /q /s /f "%SHORT_PATH_SCRIPT%" >nul 2>&1
 del /q /s /f "%SHORT_PATH_OUT%" >nul 2>&1
-rem if exist "%SHORT_PATH_OUT%" goto ShortPathKnown
-echo ##### Prepare short path to my Home folder
 echo @echo OFF > "%SHORT_PATH_SCRIPT%"
 echo echo %%~s1 >> "%SHORT_PATH_SCRIPT%"
 call "%SHORT_PATH_SCRIPT%" "%BITDUST_FULL_HOME%" > "%SHORT_PATH_OUT%"
-rem del /q /s /f "%SHORT_PATH_SCRIPT%" >nul 2>&1
-:ShortPathKnown
 set /P BITDUST_HOME=<"%SHORT_PATH_OUT%"
 setlocal enabledelayedexpansion
 for /l %%a in (1,1,300) do if "!BITDUST_HOME:~-1!"==" " set BITDUST_HOME=!BITDUST_HOME:~0,-1!
 setlocal disabledelayedexpansion
-echo ##### Short and safe path to BitDust home folder is %BITDUST_HOME%
+del /q /s /f "%SHORT_PATH_SCRIPT%" >nul 2>&1
+del /q /s /f "%SHORT_PATH_OUT%" >nul 2>&1
+echo ##### Safe path to BitDust Home folder is %BITDUST_HOME%
 
 
 set BITDUST_NODE=%BITDUST_HOME%\venv\Scripts\BitDustNode.exe
