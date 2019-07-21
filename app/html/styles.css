@@ -19,7 +19,7 @@ body {
 }
 
 .app {
-    width: 50%;
+    width: 90%;
     margin: auto;
     text-align: center;
 }
@@ -79,6 +79,8 @@ body {
 }
 
 #output {
-    width: 90%;
+    width: 100%;
     height: 30px;
+    text-align: center;
+    white-space: nowrap;
 }
