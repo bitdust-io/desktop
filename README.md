@@ -10,17 +10,17 @@ A repo for generic BitDust launcher on different desktop platforms
 
 ## Build for Windows platforms
 
-    npm run dist-win
+    make build_exe
 
 
 ## Build for MacOSx
 
-    npm run dist-mac
+    make build_dmg
 
 
 ## Build for Linux Debian
 
-    npm run dist-deb
+    make build_deb
 
 
 ## Start in "developer mode"
