@@ -114,7 +114,7 @@ if %errorlevel% neq 0 goto DEPLOY_ERROR
 echo Git binaries now located in %BITDUST_HOME%\git
 
 
-echo ##### Prepare BitDust source files
+echo ##### Prepare BitDust source code files
 if not exist %BITDUST_HOME%\src mkdir %BITDUST_HOME%\src
 
 
@@ -122,13 +122,13 @@ cd /D %BITDUST_HOME%\src
 
 
 if exist %BITDUST_HOME%\src\bitdust.py goto SourcesExist
-echo ##### Downloading BitDust software using Git from public repository
+echo ##### Downloading BitDust source code from Git repository
 %BITDUST_HOME%\git\bin\git.exe clone -q --depth 1 %BITDUST_GIT_REPO% .
 if %errorlevel% neq 0 goto DEPLOY_ERROR
 
 
 :SourcesExist
-rem echo ##### Running command "git clean" in BitDust repository
+rem echo ##### Refreshing BitDust source code from Git repository
 rem %BITDUST_HOME%\git\bin\git.exe clean -q -d -f -x .
 rem if %errorlevel% neq 0 goto DEPLOY_ERROR
 echo Running command "git fetch" in BitDust repository
@@ -139,7 +139,7 @@ echo Running command "git reset" in BitDust repository
 if %errorlevel% neq 0 goto DEPLOY_ERROR
 
 
-echo Prepare BitDust virtual environment
+echo ##### Prepare Python virtual environment
 if exist %BITDUST_HOME%\venv\Scripts\pip.exe goto VenvUpdate
 echo Creating BitDust virtual environment
 %PYTHON_EXE% bitdust.py install
@@ -148,7 +148,7 @@ goto VenvOk
 :VenvUpdate
 rem TODO: this is slow and can fail if user is offline...
 rem this actually must be only executed when requirements.txt was changed
-echo ##### Update Python requirements in BitDust environment
+echo ##### Update Python virtual requirement
 %BITDUST_HOME%\venv\Scripts\pip.exe install -U -r %BITDUST_HOME%\src\requirements.txt
 if %errorlevel% neq 0 goto DEPLOY_ERROR
 :VenvOk

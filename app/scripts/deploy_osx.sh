@@ -35,11 +35,11 @@ fi
 
 if [[ ! -e $ROOT_DIR ]]; then
     echo ''
-    echo "##### Create BitDust Home folder at $ROOT_DIR"
+    echo "##### Prepare BitDust Home folder"
     mkdir -p $ROOT_DIR
 else
     echo ''
-    echo "##### BitDust Home folder found at $ROOT_DIR"
+    echo "##### BitDust Home folder found"
 fi
 
 
@@ -51,14 +51,14 @@ gitok=`which git`
 if [[ ! $gitok ]]; then
     GIT_BIN="${ROOT_DIR}/git/bin/git"
     echo ''
-    echo "##### Copy GIT binariy from distribution to $GIT_BIN"
+    echo "##### Prepare Git binariy files"
     mkdir -p "${ROOT_DIR}/git/bin/"
     CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
     cp "${CURRENT_DIR}/../../build_resources/macos/git" "$ROOT_DIR/git/bin/"
 else
     GIT_BIN=`which git`
     echo ''
-    echo "##### GIT already installed globally at $GIT_BIN"
+    echo "##### Git binariy files already installed globally"
 fi
 
 
@@ -71,47 +71,47 @@ venvuserok=`PATH="$HOME/Library/Python/2.7/bin:$PATH" which virtualenv`
 if [[ ! $pipok ]]; then
     if [[ ! $pipuserok ]]; then
         echo ''
-        echo '##### Installing PIP for current user'
+        echo '##### Installing PIP installer for current user'
         python -m ensurepip -U -v --user
     else
         echo ''
-        echo '##### PIP already installed for current user'
+        echo '##### PIP installer already configured for current user'
     fi
 else
     echo ''
-    echo '##### PIP already installed globally'
+    echo '##### PIP installer already configured globally'
 fi
 
 
 if [[ ! $venvok ]]; then
     if [[ ! $venvuserok ]]; then
         echo ''
-        echo '##### Installing Virtualenv for current user'
+        echo '##### Preparing Virtualenv script for current user'
         python -m pip install --upgrade virtualenv --user
     else
         echo ''
-        echo '##### Virtualenv already installed for current user'
+        echo '##### Virtualenv script already installed for current user'
     fi
 else
     echo ''
-    echo '##### Virtualenv already installed globally'
+    echo '##### Virtualenv script already installed globally'
 fi
 
 
 if [[ ! -e $SOURCE_DIR ]]; then
     echo ''
-    echo "##### Сloning source code of BitDust project to $SOURCE_DIR"
+    echo "##### Downloading BitDust source files from Git repository"
     mkdir -p "$SOURCE_DIR"
     $GIT_BIN clone --depth=1 "git://github.com/bitdust-io/public.git" "$SOURCE_DIR"
 else
     echo ''
-    echo "##### BitDust source code already cloned locally in $SOURCE_DIR"
+    echo "##### BitDust source files already cloned locally"
     cd "$SOURCE_DIR"
     echo ''
-    echo "##### Running 'git fetch' in $SOURCE_DIR"
+    echo "##### Updating BitDust source files from Git repository"
     $GIT_BIN fetch
     echo ''
-    echo "##### Running 'git reset --hard origin/master' in $SOURCE_DIR"
+    echo "##### Refreshing BitDust source files"
     $GIT_BIN reset --hard origin/master
     cd ..
 fi
@@ -119,18 +119,18 @@ fi
 
 if [[ ! -e $SOURCE_UI_DIR ]]; then
     echo ''
-    echo "##### Сloning source code of BitDust UI in $SOURCE_UI_DIR"
+    echo "##### Downloading BitDust UI source files from Git repository"
     mkdir -p $SOURCE_UI_DIR
     $GIT_BIN clone --depth=1 "git://github.com/bitdust-io/ui.git" "$SOURCE_UI_DIR"
 else
     echo ''
-    echo "##### BitDust UI source code already cloned locally in $SOURCE_UI_DIR"
+    echo "##### BitDust UI source files already cloned locally"
     cd $SOURCE_UI_DIR
     echo ''
-    echo "##### Running 'git fetch' in $SOURCE_UI_DIR"
+    echo "##### Updating BitDust UI source files from Git repository"
     $GIT_BIN fetch
     echo ''
-    echo "##### Running 'git reset --hard origin/master' in $SOURCE_UI_DIR"
+    echo "##### Refreshing BitDust UI source files"
     $GIT_BIN reset --hard origin/master
     cd ..
 fi
@@ -138,20 +138,20 @@ fi
 
 if [[ ! -e $PIP_BIN ]]; then
     echo ''
-    echo "##### Installing BitDust, virtual environment location is $VENV_DIR"
+    echo "##### Preparing Python virtual environment"
     PATH="$HOME/Library/Python/2.7/bin:$PATH" python $BITDUST_PY install
 else
     # TODO: this is slow and can fail if user is offline...
     # this actually must be only executed when requirements.txt was changed
     echo ''
-    echo "##### Updating BitDust virtual environment in $VENV_DIR"
+    echo "##### Updating Python virtual environment"
     $PIP_BIN install -U -r $SOURCE_DIR/requirements.txt
 fi
 
 
 if [[ ! $GLOBAL_COMMAND_FILE ]]; then
     echo ''
-    echo "##### Create system-wide shell command for BitDust in $GLOBAL_COMMAND_FILE"
+    echo "##### Create system-wide shell command"
     ln -s -f $BITDUST_COMMAND_FILE $GLOBAL_COMMAND_FILE
 fi
 
