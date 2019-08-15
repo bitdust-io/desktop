@@ -148,7 +148,7 @@ goto VenvOk
 :VenvUpdate
 rem TODO: this is slow and can fail if user is offline...
 rem this actually must be only executed when requirements.txt was changed
-echo ##### Update Python virtual requirement
+echo ##### Update Python virtual environment
 %BITDUST_HOME%\venv\Scripts\pip.exe install -U -r %BITDUST_HOME%\src\requirements.txt
 if %errorlevel% neq 0 goto DEPLOY_ERROR
 :VenvOk
