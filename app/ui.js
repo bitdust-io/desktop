@@ -41,10 +41,10 @@ function createSplashScreen() {
 
 function createMainWindow() {
     const win = new BrowserWindow({
-        minWidth: 1000,
-        minHeight: 800,
-        width: 1200,
-        height: 800,
+        minWidth: 700,
+        minHeight: 500,
+        width: 1100,
+        height: 700,
         title: 'BitDust'
         //devTools: true
     });
