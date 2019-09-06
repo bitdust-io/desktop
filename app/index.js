@@ -1,5 +1,4 @@
-
-const { app, dialog, Tray, Menu } = require('electron');
+const {app, dialog, Tray, Menu} = require('electron');
 
 const ipc = require('electron').ipcMain
 const exec = require('child_process').exec
@@ -22,11 +21,11 @@ async function showWindow() {
         }
     } else {
         win = ui.createMainWindow()
-        //win.webContents.openDevTools()
         win.on('closed', () => {
             win = null
         })
-    } 
+    }
+    // win.webContents.openDevTools()
 }
 
 async function showDialogOnExit(e) {
@@ -80,12 +79,12 @@ async function shutdown() {
 
 
 app.on('ready', () => {
-	if (process.platform === 'win32') {
-		const iconPath = path.join(__dirname, '..', 'build_resources', 'bitdust.ico')
-		tray = new Tray(iconPath)
-		tray.setToolTip('BitDust')
-		tray.on('click', showWindow)
-	}
+    if (process.platform === 'win32') {
+        const iconPath = path.join(__dirname, '..', 'build_resources', 'bitdust.ico')
+        tray = new Tray(iconPath)
+        tray.setToolTip('BitDust')
+        tray.on('click', showWindow)
+    }
     init()
 });
 

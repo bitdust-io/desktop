@@ -46,9 +46,8 @@ function createMainWindow() {
         width: 1100,
         height: 700,
         title: 'BitDust'
-        //devTools: true
     });
-
+    
     const menu = Menu.buildFromTemplate([{
         label: 'BitDust',
         submenu: [{
@@ -64,7 +63,7 @@ function createMainWindow() {
         }]
     }])
     Menu.setApplicationMenu(menu);
-
+    
     if (process.env.ELECTRON_ENV === 'debug') {
         win.loadURL('http://localhost:8080/')
     } else {
