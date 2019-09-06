@@ -79,8 +79,8 @@ body {
 }
 
 #output {
-    width: 100%;
+    width: 90%;
     height: 30px;
     text-align: center;
-    white-space: nowrap;
+    margin: auto;
 }
