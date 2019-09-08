@@ -23,38 +23,47 @@
 
 build_dmg:
 	@echo "building dist/BitDustDesktop.dmg"
+	@rm -vrf ./dist/BitDustDesktop.dmg
 	@npm run dist-mac
 	@echo ""
 	@echo "compress dist/BitDustDesktop.dmg to dist/BitDustDesktop_dmg.zip"
-	@gzip -9 ./dist/BitDustDesktop.dmg
-	@rm -rf ./dist/BitDustDesktop_dmg.zip
-	@mv ./dist/BitDustDesktop.dmg.gz ./dist/BitDustDesktop_dmg.zip
+	@rm -vrf ./BitDustDesktop.zip
+	@mv ./dist/BitDustDesktop.dmg .
+	@zip -v -9 BitDustDesktop.zip BitDustDesktop.dmg
+	@rm -vrf BitDustDesktop.dmg
+	@mv ./BitDustDesktop.zip ./BitDustDesktop_dmg.zip
 	@echo ""
-	@echo "DONE!   now you should upload file dist/BitDustDesktop_dmg.zip to GitHub releases page"
+	@echo "DONE!   now you should upload file BitDustDesktop_dmg.zip to GitHub releases page"
 	@echo ""
 
 
 build_deb:
 	@echo "building dist/BitDustDesktop.deb"
+	@rm -vrf ./dist/BitDustDesktop.deb
 	@npm run dist-deb
 	@echo ""
 	@echo "compress dist/BitDustDesktop.deb to dist/BitDustDesktop_deb.zip"
-	@gzip -9 ./dist/BitDustDesktop.deb
-	@rm -rf ./dist/BitDustDesktop_deb.zip
-	@mv ./dist/BitDustDesktop.deb.gz ./dist/BitDustDesktop_deb.zip
+	@rm -vrf ./BitDustDesktop.zip
+	@mv ./dist/BitDustDesktop.deb .
+	@zip -v -9 BitDustDesktop.zip BitDustDesktop.deb
+	@rm -vrf BitDustDesktop.deb
+	@mv ./BitDustDesktop.zip ./BitDustDesktop_deb.zip
 	@echo ""
-	@echo "DONE!   now you should upload file dist/BitDustDesktop_deb.zip to GitHub releases page"
+	@echo "DONE!   now you should upload file BitDustDesktop_deb.zip to GitHub releases page"
 	@echo ""
 
 
 build_exe:
 	@echo "building dist/BitDustDesktop.exe"
+	@rm -vrf ./dist/BitDustDesktop.exe
 	@npm run dist-win
 	@echo ""
 	@echo "compress dist/BitDustDesktop.exe to dist/BitDustDesktop_exe.zip"
-	@gzip -9 ./dist/BitDustDesktop.exe
-	@rm -rf ./dist/BitDustDesktop_exe.zip
-	@mv ./dist/BitDustDesktop.exe.gz ./dist/BitDustDesktop_exe.zip
+	@rm -vrf BitDustDesktop.zip
+	@mv ./dist/BitDustDesktop.exe .
+	@zip -v -9 BitDustDesktop.zip BitDustDesktop.exe
+	@rm -vrf BitDustDesktop.exe
+	@mv ./BitDustDesktop.zip ./BitDustDesktop_exe.zip
 	@echo ""
-	@echo "DONE!   now you should upload file dist/BitDustDesktop_exe.zip to GitHub releases page"
+	@echo "DONE!   now you should upload file BitDustDesktop_exe.zip to GitHub releases page"
 	@echo ""

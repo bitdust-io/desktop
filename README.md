@@ -8,6 +8,11 @@ A repo for generic BitDust launcher on different desktop platforms
     npm install
 
 
+## Start in "developer mode"
+
+    npm start dev
+
+
 ## Build for Windows platforms
 
     make build_exe
@@ -21,9 +26,4 @@ A repo for generic BitDust launcher on different desktop platforms
 ## Build for Linux Debian
 
     make build_deb
-
-
-## Start in "developer mode"
-
-    npm start dev
 
