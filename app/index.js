@@ -62,10 +62,11 @@ async function showDialogOnExit(e) {
 
 
 async function installClientCertificate() {
-    https.globalAgent.options.ca = [];
-    https.globalAgent.options.ca.push(fs.readFileSync('/Users/veselin/.bitdust/metadata/apiservercert'));
-    https.globalAgent.options.key = fs.readFileSync('/Users/veselin/.bitdust/metadata/apiclientcertkey');
-    https.globalAgent.options.cert = fs.readFileSync('/Users/veselin/.bitdust/metadata/apiclientcert');
+    //https.globalAgent.options.ca = [];
+    //https.globalAgent.options.ca.push(fs.readFileSync('/Users/veselin/.bitdust/metadata/apiservercert'));
+    //https.globalAgent.options.key = fs.readFileSync('/Users/veselin/.bitdust/metadata/apiclientcertkey');
+    //https.globalAgent.options.cert = fs.readFileSync('/Users/veselin/.bitdust/metadata/apiclientcert');
+    //log.warn('installClientCertificate DONE')
 }
 
 
