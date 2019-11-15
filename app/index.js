@@ -6,6 +6,8 @@ const exec = require('child_process').exec
 const request = require('request')
 const log = require('electron-log')
 const path = require('path')
+const https = require('https')
+const fs = require('fs')
 
 const setup = require('./setup')
 const ui = require('./ui')
@@ -59,12 +61,21 @@ async function showDialogOnExit(e) {
 }
 
 
+async function installClientCertificate() {
+    https.globalAgent.options.ca = [];
+    https.globalAgent.options.ca.push(fs.readFileSync('/Users/veselin/.bitdust/metadata/apiservercert'));
+    https.globalAgent.options.key = fs.readFileSync('/Users/veselin/.bitdust/metadata/apiclientcertkey');
+    https.globalAgent.options.cert = fs.readFileSync('/Users/veselin/.bitdust/metadata/apiclientcert');
+}
+
+
 async function init() {
     try {
         const splashScreen = ui.createSplashScreen()
         await setup.runBitDust()
         log.warn('init DONE')
         splashScreen.hide()
+        installClientCertificate()
         showWindow()
         splashScreen.close()
     } catch (error) {

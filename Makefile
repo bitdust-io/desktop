@@ -26,11 +26,12 @@ build_dmg:
 	@npm run dist-mac
 	@echo ""
 	@echo "compress dist/BitDustDesktop.dmg to dist/BitDustDesktop_dmg.zip"
-	@gzip -9 ./dist/BitDustDesktop.dmg
-	@rm -rf ./dist/BitDustDesktop_dmg.zip
-	@mv ./dist/BitDustDesktop.dmg.gz ./dist/BitDustDesktop_dmg.zip
+	@cp ./dist/BitDustDesktop.dmg .
+	@zip -0 BitDustDesktop.zip BitDustDesktop.dmg
+	@rm -vrf BitDustDesktop.dmg
+	@mv ./BitDustDesktop.zip ./dist/BitDustDesktop_dmg.zip
 	@echo ""
-	@echo "DONE!   now you should upload file dist/BitDustDesktop_dmg.zip to GitHub releases page"
+	@echo "DONE!   now you should upload file ./dist/BitDustDesktop_dmg.zip to GitHub releases page"
 	@echo ""
 
 
@@ -39,11 +40,12 @@ build_deb:
 	@npm run dist-deb
 	@echo ""
 	@echo "compress dist/BitDustDesktop.deb to dist/BitDustDesktop_deb.zip"
-	@gzip -9 ./dist/BitDustDesktop.deb
-	@rm -rf ./dist/BitDustDesktop_deb.zip
-	@mv ./dist/BitDustDesktop.deb.gz ./dist/BitDustDesktop_deb.zip
+	@cp ./dist/BitDustDesktop.deb .
+	@zip -0 BitDustDesktop.zip BitDustDesktop.deb
+	@rm -vrf BitDustDesktop.deb
+	@mv ./BitDustDesktop.zip ./dist/BitDustDesktop_deb.zip
 	@echo ""
-	@echo "DONE!   now you should upload file dist/BitDustDesktop_deb.zip to GitHub releases page"
+	@echo "DONE!   now you should upload file ./dist/BitDustDesktop_deb.zip to GitHub releases page"
 	@echo ""
 
 
@@ -52,9 +54,10 @@ build_exe:
 	@npm run dist-win
 	@echo ""
 	@echo "compress dist/BitDustDesktop.exe to dist/BitDustDesktop_exe.zip"
-	@gzip -9 ./dist/BitDustDesktop.exe
-	@rm -rf ./dist/BitDustDesktop_exe.zip
-	@mv ./dist/BitDustDesktop.exe.gz ./dist/BitDustDesktop_exe.zip
+	@cp ./dist/BitDustDesktop.exe .
+	@zip -0 BitDustDesktop.zip BitDustDesktop.exe
+	@rm -vrf BitDustDesktop.exe
+	@mv ./BitDustDesktop.zip ./dist/BitDustDesktop_exe.zip
 	@echo ""
-	@echo "DONE!   now you should upload file dist/BitDustDesktop_exe.zip to GitHub releases page"
+	@echo "DONE!   now you should upload file ./dist/BitDustDesktop_exe.zip to GitHub releases page"
 	@echo ""
