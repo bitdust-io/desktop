@@ -176,7 +176,7 @@ if not exist %BITDUST_HOME%\ui mkdir %BITDUST_HOME%\ui
 
 if exist %BITDUST_HOME%\ui\dist\index.html goto UISourcesExist
 echo Downloading BitDust UI using "git clone" from GitHub repository
-%BITDUST_HOME%\git\bin\git.exe clone -q --depth 1 https://github.com/bitdust-io/ui.git ui
+%BITDUST_HOME%\git\bin\git.exe clone -q --single-branch --branch gh-pages --depth 1 https://github.com/bitdust-io/ui.git ui
 if %errorlevel% neq 0 goto DEPLOY_ERROR
 :UISourcesExist
 
@@ -191,7 +191,7 @@ echo Running command "git fetch" in BitDust UI repository
 %BITDUST_HOME%\git\bin\git.exe fetch --all
 if %errorlevel% neq 0 goto DEPLOY_ERROR
 echo Running command "git reset" in BitDust UI repository
-%BITDUST_HOME%\git\bin\git.exe reset --hard origin/master
+%BITDUST_HOME%\git\bin\git.exe reset --hard origin/gh-pages
 if %errorlevel% neq 0 goto DEPLOY_ERROR
 
 
