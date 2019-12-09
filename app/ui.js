@@ -47,7 +47,7 @@ function createMainWindow() {
         height: 700,
         title: 'BitDust'
     });
-    
+
     const menu = Menu.buildFromTemplate([{
         label: 'BitDust',
         submenu: [{
@@ -63,12 +63,12 @@ function createMainWindow() {
         }]
     }])
     Menu.setApplicationMenu(menu);
-    
+
     if (process.env.ELECTRON_ENV === 'debug') {
         win.loadURL('http://localhost:8080/')
     } else {
-        log.warn('Opening main UI page: ' + path.join(uiDir, 'dist/index.html'))
-        win.loadFile(path.join(uiDir, 'dist/index.html'))
+        log.warn('Opening main UI page: ' + path.join(uiDir, '/index.html'))
+        win.loadFile(path.join(uiDir, '/index.html'))
     }
     return win
 }

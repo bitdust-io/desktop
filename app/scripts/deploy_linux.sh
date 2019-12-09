@@ -68,7 +68,7 @@ if [ ! -d $SOURCE_UI_DIR ]; then
     echo ''
     echo "##### Downloading BitDust UI source files from Git repository"
     mkdir -p $SOURCE_UI_DIR
-    git clone --depth=1 https://github.com/bitdust-io/ui.git "$SOURCE_UI_DIR"
+    git clone --single-branch --branch gh-pages --depth=1 "git://github.com/bitdust-io/ui.git" "$SOURCE_UI_DIR"
 else
     echo ''
     echo "##### BitDust UI source files already cloned locally"
@@ -78,7 +78,7 @@ else
     git fetch
     echo ''
     echo "##### Refreshing BitDust UI source files"
-    git reset --hard origin/master
+    git reset --hard origin/gh-pages
     cd ..
 fi
 
