@@ -102,7 +102,7 @@ if [[ ! -e $SOURCE_DIR ]]; then
     echo ''
     echo "##### Downloading BitDust source files from Git repository"
     mkdir -p "$SOURCE_DIR"
-    $GIT_BIN clone --depth=1 "git://github.com/bitdust-io/public.git" "$SOURCE_DIR"
+    $GIT_BIN clone --depth=1 "https://github.com/bitdust-io/public.git" "$SOURCE_DIR"
 else
     echo ''
     echo "##### BitDust source files already cloned locally"
@@ -121,7 +121,7 @@ if [[ ! -e $SOURCE_UI_DIR ]]; then
     echo ''
     echo "##### Downloading BitDust UI source files from Git repository"
     mkdir -p $SOURCE_UI_DIR
-    $GIT_BIN clone --single-branch --branch gh-pages --depth=1 "git://github.com/bitdust-io/ui.git" "$SOURCE_UI_DIR"
+    $GIT_BIN clone --single-branch --branch gh-pages --depth=1 "https://github.com/bitdust-io/ui.git" "$SOURCE_UI_DIR"
 else
     echo ''
     echo "##### BitDust UI source files already cloned locally"
