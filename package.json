@@ -1,9 +1,14 @@
 {
   "name": "BitDustDesktop",
   "author": "BitDust Contributors <bitdust.io@gmail.com> (https://bitdust.io)",
+  "homepage": "https://bitdust.io",
   "version": "0.1.0",
   "main": "app/index.js",
-  "description": "Desktop app for BitDust",
+  "description": "BitDust Desktop",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/bitdust-io/desktop.git"
+  },
   "scripts": {
     "start": "electron .",
     "start-debug": "ELECTRON_ENV=debug electron .",

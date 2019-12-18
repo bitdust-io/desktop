@@ -9,7 +9,8 @@ PYTHON_BIN="${ROOT_DIR}/venv/bin/python"
 PIP_BIN="${ROOT_DIR}/venv/bin/pip"
 BITDUST_PY="${SOURCE_DIR}/bitdust.py"
 BITDUST_COMMAND_FILE="${ROOT_DIR}/bitdust"
-GLOBAL_COMMAND_FILE="/usr/local/bin/bitdust"
+GLOBAL_COMMAND_LOCATION="/usr/local/bin"
+GLOBAL_COMMAND_FILE="${GLOBAL_COMMAND_LOCATION}/bitdust"
 
 
 if [ "$1" = "stop" ]; then
@@ -87,7 +88,9 @@ if [ ! -d $PIP_BIN ]; then
     echo ''
     echo "##### Preparing Python virtual environment"
     python $BITDUST_PY install  1>$LOG_FILE 2>$LOG_FILE
-    ln -s -f $BITDUST_COMMAND_FILE $GLOBAL_COMMAND_FILE
+    if [ -w $GLOBAL_COMMAND_LOCATION ]; then
+        ln -s -f $BITDUST_COMMAND_FILE $GLOBAL_COMMAND_FILE
+    fi
 else
     # TODO: this is slow and can fail if user is offline...
     # this actually must be only executed when requirements.txt was changed
@@ -97,20 +100,25 @@ else
 fi
 
 
-if [ ! -f $GLOBAL_COMMAND_FILE ]; then
-    echo ''
-    echo "##### Create system-wide shell command"
-    ln -s -f $BITDUST_COMMAND_FILE $GLOBAL_COMMAND_FILE
+if [ -w $GLOBAL_COMMAND_LOCATION ]; then
+    if [ ! -f $GLOBAL_COMMAND_FILE ]; then
+        echo ''
+        echo "##### Create system-wide shell command"
+        ln -s -f $BITDUST_COMMAND_FILE $GLOBAL_COMMAND_FILE
+    fi
 fi
 
 
 echo ''
 echo '##### Starting BitDust as a daemon process'
-$GLOBAL_COMMAND_FILE daemon
-
+if [ -f $GLOBAL_COMMAND_FILE ]; then
+    $GLOBAL_COMMAND_FILE daemon
+else
+    $BITDUST_COMMAND_FILE daemon
+fi
 
 echo ''
-echo DONE'
+echo 'DONE'
 
 
 exit 0
