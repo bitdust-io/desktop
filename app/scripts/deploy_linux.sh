@@ -88,9 +88,6 @@ if [ ! -d $PIP_BIN ]; then
     echo ''
     echo "##### Preparing Python virtual environment"
     python $BITDUST_PY install  1>$LOG_FILE 2>$LOG_FILE
-    if [ -w $GLOBAL_COMMAND_LOCATION ]; then
-        ln -s -f $BITDUST_COMMAND_FILE $GLOBAL_COMMAND_FILE
-    fi
 else
     # TODO: this is slow and can fail if user is offline...
     # this actually must be only executed when requirements.txt was changed
@@ -99,6 +96,11 @@ else
     $PIP_BIN install -U -r $SOURCE_DIR/requirements.txt  1>$LOG_FILE 2>$LOG_FILE
 fi
 
+if [ -w $GLOBAL_COMMAND_LOCATION ]; then
+    echo ''
+    echo "##### Create system-wide command line alias"
+    ln -s -f $BITDUST_COMMAND_FILE $GLOBAL_COMMAND_FILE
+fi
 
 if [ -w $GLOBAL_COMMAND_LOCATION ]; then
     if [ ! -f $GLOBAL_COMMAND_FILE ]; then
