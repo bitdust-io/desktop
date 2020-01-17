@@ -35,17 +35,12 @@ async function showDialogOnExit(e) {
         e.preventDefault();
         dialog.showMessageBox({
             type: 'question',
-            buttons: ['Keep running in the background', 'Stop BitDust', 'Cancel'],
+            buttons: ['Keep running in the background', 'Stop BitDust'],
             defaultId: 0,
-            cancelId: 2,
             title: 'Confirm',
             message: 'Do you want to run BitDust in the background or stop it completely?'
         }, async (response) => {
-            if (response === 0) {
-                if (win && win.isVisible()) {
-                    win.hide()
-                }
-            } else if (response === 1) {
+            if (response === 1) {
                 try {
                     await setup.stopBitDust();
                     //setup.stopBitDust();
@@ -53,9 +48,9 @@ async function showDialogOnExit(e) {
                 } catch (error) {
                     log.error(error)
                 }
-                showExitPrompt = false
-                app.quit()
             }
+            showExitPrompt = false
+            app.quit()
         })
     }
 }
