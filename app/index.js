@@ -27,7 +27,7 @@ async function showWindow() {
             win = null
         })
     }
-    // win.webContents.openDevTools()
+    //win.webContents.openDevTools()
 }
 
 async function showDialogOnExit(e) {
@@ -43,7 +43,6 @@ async function showDialogOnExit(e) {
             if (response === 1) {
                 try {
                     await setup.stopBitDust();
-                    //setup.stopBitDust();
                     log.warn('stop BitDust DONE')
                 } catch (error) {
                     log.error(error)
