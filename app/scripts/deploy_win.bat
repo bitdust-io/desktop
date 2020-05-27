@@ -66,7 +66,6 @@ goto RestartBitDust
 echo ##### Stopping BitDust
 cd /D "%BITDUST_HOME%"
 if not exist %BITDUST_NODE_CONSOLE% goto KillBitDust
-rem echo Executing "%BITDUST_NODE_CONSOLE%" "%BITDUST_HOME%\src\bitdust.py stop"
 %BITDUST_NODE_CONSOLE% %BITDUST_HOME%\src\bitdust.py stop
 :KillBitDust
 taskkill /IM BitDustNode.exe /F /T
@@ -83,7 +82,6 @@ goto StartBitDust
 echo Restarting BitDust
 cd /D "%BITDUST_HOME%"
 if not exist %BITDUST_NODE_CONSOLE% goto BitDustRestarted
-rem echo Executing "%BITDUST_NODE_CONSOLE%" "%BITDUST_HOME%\src\bitdust.py restart"
 %BITDUST_NODE_CONSOLE% %BITDUST_HOME%\src\bitdust.py restart
 :BitDustRestarted
 echo DONE
@@ -101,7 +99,6 @@ echo Extracting Python binaries
 %UNZIP_EXE% -o -q %PYTHON_ZIP% -d %BITDUST_HOME%
 if %errorlevel% neq 0 goto DEPLOY_ERROR
 :PythonInstalled
-rem echo Python binaries now located in %BITDUST_HOME%\python
 
 
 echo ##### Prepare Git binaries
