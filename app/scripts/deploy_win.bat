@@ -170,7 +170,7 @@ rem echo Copied %BITDUST_HOME%\venv\Scripts\python.exe to %BITDUST_NODE_CONSOLE%
 echo ##### Prepare BitDust UI source files
 if not exist %BITDUST_HOME%\ui mkdir %BITDUST_HOME%\ui
 
-if exist %BITDUST_HOME%\ui\dist\index.html goto UISourcesExist
+if exist %BITDUST_HOME%\ui\index.html goto UISourcesExist
 echo Downloading BitDust UI files from GitHub repository
 %BITDUST_HOME%\git\bin\git.exe clone -q --single-branch --branch gh-pages --depth 1 https://github.com/bitdust-io/ui.git ui
 if %errorlevel% neq 0 goto DEPLOY_ERROR
