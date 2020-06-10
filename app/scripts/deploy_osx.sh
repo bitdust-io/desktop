@@ -110,7 +110,7 @@ else
     cd "$SOURCE_DIR"
     echo ''
     echo "##### Updating BitDust source files from Git repository"
-    $GIT_BIN fetch
+    $GIT_BIN fetch --all
     echo ''
     echo "##### Refreshing BitDust source files"
     $GIT_BIN reset --hard origin/master
@@ -129,7 +129,7 @@ else
     cd $SOURCE_UI_DIR
     echo ''
     echo "##### Updating BitDust UI source files from Git repository"
-    $GIT_BIN fetch
+    $GIT_BIN fetch --all
     echo ''
     echo "##### Refreshing BitDust UI source files"
     $GIT_BIN reset --hard origin/gh-pages
