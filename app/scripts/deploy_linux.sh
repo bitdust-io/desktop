@@ -76,7 +76,7 @@ else
     cd $SOURCE_UI_DIR
     echo ''
     echo "##### Updating BitDust UI source files from Git repository"
-    git fetch
+    git fetch --all
     echo ''
     echo "##### Refreshing BitDust UI source files"
     git reset --hard origin/gh-pages
@@ -87,7 +87,7 @@ fi
 if [ ! -d $PIP_BIN ]; then
     echo ''
     echo "##### Preparing Python virtual environment"
-    python $BITDUST_PY install  1>$LOG_FILE 2>$LOG_FILE
+    python3 $BITDUST_PY install  1>$LOG_FILE 2>$LOG_FILE
 else
     # TODO: this is slow and can fail if user is offline...
     # this actually must be only executed when requirements.txt was changed
