@@ -60,6 +60,13 @@ function createMainWindow() {
                     log.error(error)
                 }
             }
+        },
+        {
+            label: "Dev Tools",
+            accelerator: "F12",
+            click: () => {
+              win.webContents.toggleDevTools();
+            }
         }]
     }])
     Menu.setApplicationMenu(menu);
