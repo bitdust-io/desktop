@@ -27,7 +27,7 @@ async function showWindow() {
             win = null
         })
     }
-    win.webContents.openDevTools()
+    //win.webContents.openDevTools()
 }
 
 async function showDialogOnExit(e) {
