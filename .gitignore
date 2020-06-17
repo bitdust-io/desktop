@@ -1,4 +1,5 @@
 build_resources/macos/python
+build_resources/macos/git
 BitDustDesktop_dmg.zip
 BitDustDesktop_exe.zip
 BitDustDesktop_deb.zip

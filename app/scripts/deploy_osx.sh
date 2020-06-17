@@ -14,7 +14,7 @@ GLOBAL_COMMAND_FILE="${GLOBAL_COMMAND_LOCATION}/bitdust"
 CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 PYTHON_DIST_DIR="${CURRENT_DIR}/../../build_resources/macos/python"
 
-GIT_BIN="${CURRENT_DIR}/../../build_resources/macos/git"
+GIT_BIN="${CURRENT_DIR}/../../build_resources/macos/git/bin/git"
 PYTHON_BIN="${PYTHON_DIST_DIR}/bin/python3.8"
 PYTHON_VENV_BIN="${ROOT_DIR}/venv/bin/python"
 PIP_BIN="${ROOT_DIR}/venv/bin/pip"

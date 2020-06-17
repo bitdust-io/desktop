@@ -23,8 +23,10 @@
 
 build_dmg:
 	@echo "building dist/BitDustDesktop.dmg"
-	@echo "extracting build_resources/python.zip"
-	@unzip -u build_resources/macos/python.zip -d build_resources/macos/
+	@echo "extracting build_resources/macos/python.zip"
+	@unzip -q -u build_resources/macos/python.zip -d build_resources/macos/
+	@echo "extracting build_resources/macos/git.zip"
+	@unzip -q -u build_resources/macos/git.zip -d build_resources/macos/
 	@npm run dist-mac
 	@echo ""
 	@echo "compress dist/BitDustDesktop.dmg to dist/BitDustDesktop_dmg.zip"
