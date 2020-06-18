@@ -50,7 +50,8 @@ function createMainWindow() {
 
     const menu = Menu.buildFromTemplate([{
         label: 'BitDust',
-        submenu: [{
+        submenu: [
+        {
             label: 'Restart',
             click() {
                 try {
@@ -62,12 +63,24 @@ function createMainWindow() {
             }
         },
         {
+            label: 'Re-deploy',
+            click() {
+                try {
+                    setup.redeployBitDust()
+                    log.warn('redeploy BitDust DONE')
+                } catch (error) {
+                    log.error(error)
+                }
+            }
+        },
+        {
             label: "Dev Tools",
             accelerator: "F12",
             click: () => {
               win.webContents.toggleDevTools();
             }
-        }]
+        }
+        ]
     }])
     Menu.setApplicationMenu(menu);
 

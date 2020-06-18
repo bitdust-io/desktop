@@ -40,6 +40,20 @@ if [[ "$1" == "restart" ]]; then
 fi
 
 
+if [[ "$1" == "redeploy" ]]; then
+    echo ''
+    echo '##### Re-deploying BitDust'
+    rm -rf $ROOT_DIR/venv
+    rm -rf $ROOT_DIR/src
+    rm -rf $ROOT_DIR/ui
+    rm -rf $ROOT_DIR/identitycache
+    rm -rf $ROOT_DIR/identityhistory
+    rm -rf $ROOT_DIR/temp
+    echo ''
+    echo 'cleanup DONE'
+fi
+
+
 if [[ ! -e $ROOT_DIR ]]; then
     echo ''
     echo "##### Prepare BitDust Home folder"
