@@ -38,7 +38,6 @@
         "**/*",
         "!build_resources/win/",
         "!build_resources/macos/python.zip",
-        "!build_resources/macos/git.zip",
         "!app/scripts/deploy_win.bat",
         "!app/scripts/deploy_linux.sh"
       ]
