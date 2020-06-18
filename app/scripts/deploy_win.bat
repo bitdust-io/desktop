@@ -60,9 +60,9 @@ set GIT_EXE=%BITDUST_HOME%\git\bin\git.exe
 rem echo GIT process is %GIT_EXE%
 
 
-if /I "%~1"=="stop" goto StopBitDust
+if /I "%~1"=="stop" goto StopBitDustGo
 goto RestartBitDust
-:StopBitDust
+:StopBitDustGo
 echo ##### Stopping BitDust
 cd /D "%BITDUST_HOME%"
 if not exist %BITDUST_NODE_CONSOLE% goto KillBitDust
@@ -76,9 +76,9 @@ exit /b %errorlevel%
 
 
 :RestartBitDust
-if /I "%~1"=="restart" goto RestartBitDust
-goto StartBitDust
-:RestartBitDust
+if /I "%~1"=="restart" goto RestartBitDustGo
+goto RedeployBitDust
+:RestartBitDustGo
 echo Restarting BitDust
 cd /D "%BITDUST_HOME%"
 if not exist %BITDUST_NODE_CONSOLE% goto BitDustRestarted
@@ -86,6 +86,20 @@ if not exist %BITDUST_NODE_CONSOLE% goto BitDustRestarted
 :BitDustRestarted
 echo DONE
 exit /b %errorlevel%
+
+
+:RedeployBitDust
+if /I "%~1"=="redeploy" goto RedeployBitDustGo
+goto StartBitDust
+:RedeployBitDustGo
+echo Redeploying BitDust
+rmdir /S /Q %BITDUST_HOME%\venv
+rmdir /S /Q %BITDUST_HOME%\src
+rmdir /S /Q %BITDUST_HOME%\ui
+rmdir /S /Q %BITDUST_HOME%\identitycache
+rmdir /S /Q %BITDUST_HOME%\identityhistory
+rmdir /S /Q %BITDUST_HOME%\temp
+echo Cleanup finished
 
 
 :StartBitDust

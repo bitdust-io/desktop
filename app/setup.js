@@ -73,6 +73,7 @@ const stopBitDust = () => {
     })
 }
 
+
 const restartBitDust = () => {
     log.warn('Going to restart BitDust, Target platform: ' + process.platform)
     const deployScript = getEnvironmentScript(process.platform);
@@ -102,8 +103,35 @@ const restartBitDust = () => {
 }
 
 
+const redeployBitDust = () => {
+    log.warn('Going to re-deply BitDust, Target platform: ' + process.platform)
+    const deployScript = getEnvironmentScript(process.platform);
+    const options = { env : process.env };
+    options.env.PATH = shellPath.sync();
+    const deployScriptRestart = deployScript + ' redeploy';
+    log.warn('Running: ' + deployScriptRestart);
+    return new Promise((resolve, reject) => {
+        const childProcess = exec(deployScriptRestart, options);
+
+        childProcess.stdout.on('data', (data) => {
+            const message = data.toString()
+            log.warn(message)
+        });
+
+        childProcess.stderr.on('data', (data) => {
+            const errmessage = data.toString()
+            log.warn(errmessage)
+        });
+
+        childProcess.stdout.on('error', reject);
+        childProcess.stdout.on('close', resolve);
+    })
+}
+
+
 module.exports = {
     runBitDust,
     stopBitDust,
-    restartBitDust
+    restartBitDust,
+    redeployBitDust
 }
