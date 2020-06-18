@@ -60,9 +60,9 @@ if [[ ! -e $SOURCE_DIR ]]; then
     $PYTHON_BIN -c "import pygit2; pygit2.clone_repository('https://github.com/bitdust-io/public.git', '$SOURCE_DIR')"
     # $GIT_BIN clone --depth=1 "git://github.com/bitdust-io/public.git" "$SOURCE_DIR"
 else
-    echo ''
-    echo "##### BitDust source files already cloned locally"
-    cd "$SOURCE_DIR"
+    # echo ''
+    # echo "##### BitDust source files already cloned locally"
+    # cd "$SOURCE_DIR"
     echo ''
     echo "##### Updating BitDust source files from Git repository"
     $PYTHON_BIN -c "import pygit2; repo=pygit2.init_repository('$SOURCE_DIR'); repo.remotes[0].fetch(); top=repo.lookup_reference('refs/remotes/origin/master').target; repo.reset(top, pygit2.GIT_RESET_HARD);"
@@ -70,7 +70,7 @@ else
     # echo ''
     # echo "##### Refreshing BitDust source files"
     # $GIT_BIN reset --hard origin/master
-    cd ..
+    # cd ..
 fi
 
 
@@ -81,9 +81,9 @@ if [[ ! -e $SOURCE_UI_DIR ]]; then
     $PYTHON_BIN -c "import pygit2; pygit2.clone_repository('https://github.com/bitdust-io/ui.git', '$SOURCE_UI_DIR', checkout_branch='gh-pages')"
     # $GIT_BIN clone --single-branch --branch gh-pages --depth=1 "git://github.com/bitdust-io/ui.git" "$SOURCE_UI_DIR"
 else
-    echo ''
-    echo "##### BitDust UI source files already cloned locally"
-    cd $SOURCE_UI_DIR
+    # echo ''
+    # echo "##### BitDust UI source files already cloned locally"
+    # cd $SOURCE_UI_DIR
     echo ''
     echo "##### Updating BitDust UI source files from Git repository"
     $PYTHON_BIN -c "import pygit2; repo=pygit2.init_repository('$SOURCE_UI_DIR'); repo.remotes[0].fetch(); top=repo.lookup_reference('refs/remotes/origin/gh-pages').target; repo.reset(top, pygit2.GIT_RESET_HARD);"
@@ -91,7 +91,7 @@ else
     # echo ''
     # echo "##### Refreshing BitDust UI source files"
     # $GIT_BIN reset --hard origin/gh-pages
-    cd ..
+    # cd ..
 fi
 
 
