@@ -1,3 +1,9 @@
+# DEPRECATED
+
+This project is deprecated, work continues in this repository: [BitDust p2p-app](https://github.com/bitdust-io/p2p-app)
+
+
+
 # BitDust Desktop
 
 A repo for generic BitDust launcher on different desktop platforms
